@@ -1,0 +1,70 @@
+\chapter{Modifica dei dati}
+La parte di DML (Data Manipulation Language) comprende i comandi per interrogare e modificare il contenuto della base di dati.
+
+
+
+\section{Inserimento}
+Il comando di inserimento di righe nella base di dati presenta due sintassi alternative: la prima permette di inserire \textbf{singole righe} all'interno delle tabelle. L'argomento della clausola \texttt{values} rappresenta esplicitamente i valori degli attributi della singola riga.
+	\begin{lstlisting}
+		insert into NomeTabella [ListaAttributi]
+			values (ListaValori)
+	\end{lstlisting}
+La seconda forma, invece, permette di aggiungere \textbf{insiemi di righe}, estratti dal contenuto della base di dati.
+	\begin{lstlisting}
+		insert into NomeTabella [ListaAttributi]
+			select ...
+	\end{lstlisting}
+Ciascuna forma del comando possiede uno specifico campo di applicazione: la prima forma è quella tipicamente usata all'interno dei programmi per riempire una tabella con i dati forniti direttamente dagli utenti.\\
+Ogni uso del comando di \texttt{insert} è generalmente associato al riempimento di una \textbf{maschera} (o \textbf{form}), ovvero un'interfaccia di facile uso in cui all'utente vengono presentati sul video il nome dei vari attributi e appositi spazi in cui immettere i relativi valori.\\
+La seconda forma permette invece di inserire dati in una tabella a partire da altre informazioni presenti nella base di dati.\\\\
+Se in un inserimento non vengono specificati i valori di tutti gli attributi della tabella, agli attributi mancanti viene assegnato il valore di default, o in assenza di questo, il valore nullo;  se l'inserimento viola un vincolo \texttt{not null} definito sull'attributo, l'inserimento viene rifiutato.\\\\
+Si noti, infine, che la corrispondenza tra gli attributi della tabella e i valori da inserire è data dall'ordine in cui compaiono i termini nella definizione della tabella. Perciò, al primo attributo che compare in \texttt{ListaValori} (per la prima forma del comando) o al primo elemento della clausola \texttt{select} (per la seconda forma) deve corrispondere il primo attributo che compare in \texttt{ListaAttributi} (o nella definizione della tabella se \texttt{ListaAttributi} è omesso), e così via per gli altri attributi.
+
+	
+
+\section{Cancellazione}
+Il comando \texttt{delete} elimina righe dalle tabelle della base di dati, seguendo la semplice sintassi:
+	$$\texttt{delete from NomeTabella where [Condizione]}$$
+Quando la condizione argomento della clausola \texttt{where} non viene specificata, il comando cancella tutte le righe della tabella,, altrimenti vengono rimosse solo le righe che soddisfano la condizione.\\
+Qualora esista un vincolo di integrità referenziale con politica di \texttt{cascade} in cui la tabella viene referenziata, allora la cancellazione di righe dalla tabella può comportare la cancellazione di righe appartenenti ad altre tabelle (e si può generare una reazione a catena se queste cancellazioni a loro volta causano la cancellazione di righe di altre tabelle).
+
+
+
+\section{Modifica}
+Il comando \texttt{update} presenta una sintassi più complicata rispetto agli altri due:
+	\begin{lstlisting}
+		update NomeTabella
+			set Attributo = <Espressione | select ...SQL... | null | default>
+			{, Attributo = <Espressione | select ...SQL... | null | default> }
+		[where Condizione]
+	\end{lstlisting}
+Il comando \texttt{update} permette di aggiornare uno o più attributi delle righe di \texttt{NomeTabella} che soddisfano l'eventuale \texttt{Condizione}.\\
+Se il comando non presenta la clausola \texttt{where}, si suppone che la condizione sia soddisfatta e si esegue la modifica su tutte le righe. Il nuovo valore cui viene posto l'attributo può essere:
+	\begin{enumerate}
+			\item {Il risultato della valutazione di un'espressione sugli attributi della tabella, che può anche far riferimento al valore corrente dell'attributo che verrà modificato dal comando.}
+			\item {Il risultato di una generica interrogazione SQL}
+			\item {Il valore nullo}
+			\item {Il valore di default per il dominio}
+	\end{enumerate}
+La natura \textbf{set-oriented} di SQL presenta alcune particolarità di cui è necessario tenere conto.\\
+Consideriamo  lo schema 
+		\begin{equation}\begin{aligned}
+			IMPIEGATO (\underline{Nome, Cognome}, Dipartimento, Ufficio, Stipendio, Citta)\\
+			DIPARTIMENTO (\underline{Nome}, Indirizzo, Citta)
+		\end{aligned}\end{equation}
+Vogliamo modificare gli stipendi dei dipendenti, aumentando del $10\%$ gli stipendi inferiori a 30, e del $15\%$ agli stipendi superiori.\\
+Un modo per aggiornare in questo modo la base dati consiste nell'eseguire questo comando:
+	\begin{lstlisting}
+		update Impiegato
+			set I.Stipendio = I.Stipendio * 1.1
+			where I.Stipendio <= 30
+			
+		update Impiegato
+			set I.Stipendio = I.Stipendio * 1.15
+			where I.Stipendio > 30
+	\end{lstlisting}
+Il problema di questa soluzione è che se consideriamo un dipendente con uno stipendio iniziale di 30, questo soddisferà la condizione del primo comando di aggiornamento, per cui l'attributo \texttt{Stipendio} verrà posto pari a 33. Ma, a questo punto, la riga soddisferà anche le condizioni del secondo comando di aggiornamento, per cui lo stipendio sarà nuovamente modificato. \\
+Il risultato finale è che per questa riga l'aumento complessivo sarà del $26.5 \%$, violando quindi i requisiti di partenza.\\\\
+Il problema ha origine nel carattere \textit{set-oriented} di SQL. Con un linguaggio \textit{tuple-oriented} sarebbe possibile analizzare le righe una a una e applicare o l'una o l'altra delle modifiche a seconda del valore dello stipendio.\\
+In questo caso una semplice soluzione consiste nell'invertire l'ordine di esecuzione dei due comandi, aumentando prima gli stipendi superiori e poi i rimanenti.\\
+In casi più complicati risulta necessario introdurre degli aggiornamenti intermedi, fare uso di costrutti avanzati, oppure cambiare completamente approccio e scrivere un programma in un tradizionale linguaggio di programmazione. 
