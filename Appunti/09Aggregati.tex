@@ -1,0 +1,192 @@
+\chapter{Aggregati}
+
+
+
+
+\section{Operatori aggregati}
+Gli operatori aggregati costituiscono una delle più importanti estensioni di SQL rispetto all'algebra relazionale. Infatti, in algebra relazionale tutte le condizioni vengono valutate su una tupla alla volta, la condizione è sempre un predicato che viene valutato su ciascuna tupla indipendentemente da tutte le altre.\\
+Spesso, però, nei contesti reali è richiesto di valutare delle proprietà che dipendono da insiemi di tuple.\\\\
+Gli operatori aggregati vengono gestiti come un'estensione delle normali interrogazioni. Prima viene normalmente eseguita l'interrogazione, considerando solo le parti \texttt{from} e \texttt{where}.\\
+L'operatore aggregato viene poi applicato alla tabella contenente il risultato dell'interrogazione.
+
+
+\subsection{Operatore \texttt{count}}
+L'operatore \texttt{count} calcola il numero di tuple che compongono la tabella risultante dall'interrogazione, usando la seguente sintassi:
+    $$\texttt{count (<* | [distinct|all] listaAttributi>)}$$
+La prima opzione \texttt{*} restituisce il numero di righe.\\
+L'opzione \texttt{distinct} restituisce il numero di diversi valori degli attributi in \texttt{ListaAttributi}.\\
+L'opzione \texttt{all} restituisce il numero di righe che possiedono valori diversi dal valore nullo per gli attributi in \texttt{ListaAttributi}.\\
+Se si specifica un attributo e si omette \texttt{distinct} o \texttt{all}, si assume \texttt{all} come default.
+    
+\subsubsection{Esempio 1}
+Consideriamo la seguente base dati:
+    \begin{equation}\begin{aligned}
+        IMPIEGATO (\underline{Nome, Cognome}, Dipartimento, Ufficio, Stipendio, Citta)\\
+        DIPARTIMENTO (\underline{Nome}, Indirizzo, Citta)
+    \end{aligned}\end{equation}
+Estrarre il numero di impiegati del dipartimento $Produzione$
+    \begin{lstlisting}{Esempio 1}
+        select 
+            count(*)
+        from 
+            Impiegato as I
+        where 
+            I.Dipartimento = 'Produzione'
+    \end{lstlisting}
+
+\subsubsection{Esempio 2}
+Consideriamo la seguente base dati:
+    \begin{equation}\begin{aligned}
+        IMPIEGATO (\underline{Nome, Cognome}, Dipartimento, Ufficio, Stipendio, Citta)\\
+        DIPARTIMENTO (\underline{Nome}, Indirizzo, Citta)
+    \end{aligned}\end{equation}
+Estrarre il numero di diversi valori dell'attributo $Stipendio$ fra tutte le righe di $IMPIEGATO$
+    \begin{lstlisting}{Esempio 2}
+        select 
+            count (distinct I.Stipendio)
+        from 
+            Impiegato as I
+    \end{lstlisting}
+
+\subsubsection{Esempio 3}
+Consideriamo la seguente base dati:
+    \begin{equation}\begin{aligned}
+        IMPIEGATO (\underline{Nome, Cognome}, Dipartimento, Ufficio, Stipendio, Citta)\\
+        DIPARTIMENTO (\underline{Nome}, Indirizzo, Citta)
+    \end{aligned}\end{equation}
+Estrarre il numero di righe che possiedono un valore non nullo per l'attributo $Nome$
+    \begin{lstlisting}{Esempio 3}
+        select 
+            count (all I.Nome)
+        from 
+            Impiegato as I
+    \end{lstlisting}
+
+\subsection{Altri operatori aggregati}
+Gli altri operatori aggregati (\texttt{sum, max, min, avg}), invece, ammettono come argomento un attributo o un'espressione, eventualmente preceduta dalle parole chiave \texttt{distinct} o \texttt{all}.\\
+Le funzioni aggregate \texttt{sum} e \texttt{avg} ammettono come argomento solo espressioni che rappresentano valori numerici o intervalli di tempo.\\
+Le funzioni \texttt{min} e \texttt{max} richiedono solamente che sull'espressione sia definito un ordinamento, per cui si possono applicare anche su stringhe di caratteri o su istanti di tempo
+	$$\texttt{<sum | max | min | avg> ([distinct | all] AttEsp)}$$
+Gli operatori si applicano sulle righe che soddisfano la condizione presente nella clausola \texttt{where} e hanno il seguente significato:
+	\begin{itemize}
+		\item{\texttt{sum}: restituisce la somma dei valori posseduti dall'espressione}
+		\item {\texttt{max} e \texttt{min}: restituiscono rispettivamente il valore massimo e minimo}
+		\item {\texttt{avg}: restituisce la medai dei valori (ossia il risultato della divisione di \texttt{sum} per \texttt{count})}
+	\end{itemize}
+Le parole chiave \texttt{distinct} e \texttt{all} hanno il significato che abbiamo già visto: \texttt{distinct} elimina i duplicati, mentre \texttt{all} trascura solo i valori nulli; l'uso di \texttt{distinct} o \texttt{all} con gli operatori \texttt{max} e \texttt{min} non ha effetto sul risultato.
+
+\subsubsection{Esempio 4}
+Consideriamo la seguente base dati:
+	\begin{equation}\begin{aligned}
+		IMPIEGATO (\underline{Nome, Cognome}, Dipartimento, Ufficio, Stipendio, Citta)\\
+		DIPARTIMENTO (\underline{Nome}, Indirizzo, Citta)
+	\end{aligned}\end{equation}
+Estrarre la somma degli stipendi del dipartimento 'Amministrazione'
+	\begin{lstlisting}{Esempio 4}
+		select 
+			sum(I.Stipendio)
+		from 
+			Impiegato as I
+		where
+			I.Dipartimento = 'Amministrazione'
+	\end{lstlisting}
+	
+
+
+\section{Interrogazioni con raggruppamento}
+Abbiamo caratterizzato gli operatori aggregati come gli operatori che vengono applicati a un insieme di righe. Molto spesso, però, sorge l'esigenza di applicare l'operatore aggregato separatamente a sottoinsiemi di righe.\\
+Per poter utilizzare in questo modo l'operatore aggregato, SQL mette a disposizione la clausola \texttt{group by}, che permette di specificare come dividere le tabelle in sottoinsiemi. La clausola ammette come argomento un insieme di attributi e l'interrogazione raggrupperà le righe che possiedono gli stessi valori per questo insieme di attributi.\\\\
+Inizialmente, l'interrogazione viene eseguita come se la clausola non esistesse, selezionando gli attributi che compaiono come argomenti della clausola \texttt{group by} o che compaiono all'interno dell'espressione argomento dell'operatore aggregato.\\
+La tabella ottenuta viene poi analizzata, dividendo le righe in insiemi caratterizzati dallo stesso valore degli attributi che compaiono come argomento della clausola \texttt{group by}.\\
+Dopo che le righe sono state raggruppate in sottoinsiemi, l'operatore aggregato viene applicato separatamente su ogni sottoinsieme. Il risultato dell'interrogazione è costituito da una tabella con righe che contengono l'esito della valutazione dell'operatore aggregato affiancato al valore dell'attributo che è stato usato per l'aggregazione.\\\\
+La sintassi impone che, in un'interrogazione che fa uso della clausola \texttt{group by}, possa comparire come argomento della \texttt{select} solamente un sottoinsieme degli attributi usati nella clausola \texttt{group by}. Per questi attributi, infatti, ciascuna tupla del sottoinsieme sarà caratterizzata dallo stesso valore.
+
+\subsubsection{Esempio 5}
+Consideriamo la seguente base dati:
+	\begin{equation}\begin{aligned}
+		IMPIEGATO (\underline{Nome, Cognome}, Dipartimento, Ufficio, Stipendio, Citta)\\
+		DIPARTIMENTO (\underline{Nome}, Indirizzo, Citta)
+	\end{aligned}\end{equation}
+Estrarre la somma degli stipendi di tutti gli impiegati dello stesso dipartimento.
+	\begin{lstlisting}{Esempio 5}
+		select 
+			I.Dipartimento, sum(I.Stipendio)
+		from 
+			Impiegato as I
+		group by
+			I.Dipartimento
+	\end{lstlisting}
+
+\subsubsection{Esempio 6}
+Consideriamo la seguente base dati:
+	\begin{equation}\begin{aligned}
+		IMPIEGATO (\underline{Nome, Cognome}, Dipartimento, Ufficio, Stipendio, Citta)\\
+		DIPARTIMENTO (\underline{Nome}, Indirizzo, Citta)
+	\end{aligned}\end{equation}
+Estrarre i dipartimenti, il numero di impiegati di ciascun dipartimento, e la città in cui il dipartimento ha sede.
+	\begin{lstlisting}{Esempio 6}
+		select 
+			I.Dipartimento
+			count(*)
+			D.Citta
+		from 
+			Impiegato as I
+			join Dipartimento D
+				on (I.Dipartimento = D.Nome)
+		group by
+			I.Dipartimento, D.Citta
+	\end{lstlisting}
+	
+
+\subsection{Predicati sui gruppi}
+Abbiamo visto come, tramite la clausola \texttt{group by}, le righe possano venire raggruppate in sottoinsiemi. Un'applicazione può aver bisogno di considerare solo i sottoinsiemi che soddisfano certe condizioni.\\
+Se le condizioni che i sottoinsiemi devono soddisfare sono verificabili al livello delle singole righe, allora basta porre gli opportuni predicati come argomento della clausola \texttt{where}.\\
+Se invece le condizioni sono delle condizioni di tipo aggregato, sarà necessario utilizzare un nuovo costrutto, la clausola \texttt{having}.\\\\
+La clausola \texttt{having} descrive le condizioni che si devono applicare al termine dell'esecuzione di un'interrogazione che fa uso della clausola \texttt{group by}. Ogni sottoinsieme di righe costruito dalla \texttt{group by} fa parte del risultato dell'interrogazione solo se il predicato argomento della \texttt{having} risulta soddisfatto.\\\\
+Il funzionamento dell'interrogazione è piuttosto semplice: si procede seguendo gli stessi passi descritti per le interrogazioni con \texttt{group by}. Dopo aver raggruppato le righe in base agli attributi specificati, viene valutato il predicato argomento della clausola \texttt{having}, selezionando le righe che lo soddisfano.\\\\
+La sintassi permette anche la definizione di interrogazioni che presentano la clausola \texttt{having} senza una corrispondente clausola \texttt{group by}.\\
+In questo caso l'intero insieme di righe è trattato come un unico raggruppamento, ma questo ha in generale un limitato campo di applicabilità, perché, se la condizione non è soddisfatta il risultato sarà vuoto.\\\\
+Come la clausola \texttt{where}, anche la clausola \texttt{having} ammette come argomento un'espressione booleana su predicati semplici. I predicati semplici sono normalmente confronti tra il risultato della valutazione di un operatore aggregato e una generica espressione; sintatticamente è ammessa anche la presenza diretta degli attributi argomento della \texttt{group by}, ma è preferibile raccogliere tutte le condizioni su questi attributi nell'ambito della clausola \texttt{where}.\\
+Per sapere quali predicati di un'interrogazione che fa uso del raggruppamento vanno dati come argomento della clausola \texttt{where} e quali come argomento della clausola \texttt{having}, basta rispettare il seguente criterio: solo i predicati in cui compaiono operatori aggregati devono essere argomento della clausola \texttt{having}.
+
+\subsubsection{Esempio 7}
+Consideriamo la seguente base dati:
+	\begin{equation}\begin{aligned}
+		IMPIEGATO (\underline{Nome, Cognome}, Dipartimento, Ufficio, Stipendio, Citta)\\
+		DIPARTIMENTO (\underline{Nome}, Indirizzo, Citta)
+	\end{aligned}\end{equation}
+Estrarre i dipartimenti che spendono più di 100 in stipendi
+	\begin{lstlisting}{Esempio 7}
+		select
+			I.Dipartimento,
+			sum(I.Stipendio) as SommaStipendi
+		from
+			Impiegato as I
+		group by
+			I.Dipartimento
+		having
+			sum(Stipendio) > 100
+	\end{lstlisting}
+	
+\subsubsection{Esempio 8}
+Consideriamo la seguente base dati:
+	\begin{equation}\begin{aligned}
+		IMPIEGATO (\underline{Nome, Cognome}, Dipartimento, Ufficio, Stipendio, Citta)\\
+		DIPARTIMENTO (\underline{Nome}, Indirizzo, Citta)
+	\end{aligned}\end{equation}
+Estrarre i dipartimenti per cui la media degli stipendi degli impiegati che lavorano nell'ufficio 20 è superiore a 25.
+	\begin{lstlisting}{Esempio 8}
+		select	
+			I. Dipartimento
+		from
+			Impiegato as I
+		where
+			I.Ufficio = 20
+		group by 
+			I.Dipartimento
+		having
+			avg(I.Stipendio) > 25
+	\end{lstlisting}
+
+	
+

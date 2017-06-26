@@ -1,0 +1,266 @@
+\select@language {italian}
+\select@language {italian}
+\contentsline {part}{I\hspace {1em}Teoria}{7}{part.1}
+\contentsline {chapter}{\numberline {1}Modello Relazionale}{8}{chapter.1}
+\contentsline {section}{\numberline {1.1}Relazione}{8}{section.1.1}
+\contentsline {section}{\numberline {1.2}Attributo}{8}{section.1.2}
+\contentsline {subsection}{\numberline {1.2.1}Tipologia}{8}{subsection.1.2.1}
+\contentsline {subsection}{\numberline {1.2.2}Dominio}{8}{subsection.1.2.2}
+\contentsline {subsection}{\numberline {1.2.3}Valore nullo}{9}{subsection.1.2.3}
+\contentsline {section}{\numberline {1.3}Schema di una relazione}{9}{section.1.3}
+\contentsline {section}{\numberline {1.4}Grado di una relazione}{9}{section.1.4}
+\contentsline {section}{\numberline {1.5}Istanza di una relazione}{9}{section.1.5}
+\contentsline {section}{\numberline {1.6}Cardinalit\IeC {\`a} di una relazione}{10}{section.1.6}
+\contentsline {section}{\numberline {1.7}Notazioni ibride}{10}{section.1.7}
+\contentsline {section}{\numberline {1.8}Tupla}{11}{section.1.8}
+\contentsline {subsection}{\numberline {1.8.1}Valori di una tupla}{11}{subsection.1.8.1}
+\contentsline {subsubsection}{Esempio}{11}{section*.2}
+\contentsline {section}{\numberline {1.9}Vincoli locali}{12}{section.1.9}
+\contentsline {subsection}{\numberline {1.9.1}Vincolo locale di dominio}{12}{subsection.1.9.1}
+\contentsline {subsection}{\numberline {1.9.2}Vincolo sui valori nulli}{12}{subsection.1.9.2}
+\contentsline {subsection}{\numberline {1.9.3}Altri vincoli}{12}{subsection.1.9.3}
+\contentsline {subsection}{\numberline {1.9.4}Vincolo di identificazione}{13}{subsection.1.9.4}
+\contentsline {subsection}{\numberline {1.9.5}Definizione di superchiave}{13}{subsection.1.9.5}
+\contentsline {subsection}{\numberline {1.9.6}Chiave candidata}{13}{subsection.1.9.6}
+\contentsline {subsection}{\numberline {1.9.7}Chiave principale}{14}{subsection.1.9.7}
+\contentsline {section}{\numberline {1.10}Correttezza di una relazione}{14}{section.1.10}
+\contentsline {section}{\numberline {1.11}Schema di una base dati}{14}{section.1.11}
+\contentsline {section}{\numberline {1.12}Vincoli globali}{14}{section.1.12}
+\contentsline {subsection}{\numberline {1.12.1}Vincolo di integrit\IeC {\`a} referenziale}{14}{subsection.1.12.1}
+\contentsline {subsection}{\numberline {1.12.2}Vincoli globali generali}{15}{subsection.1.12.2}
+\contentsline {section}{\numberline {1.13}Base dati}{15}{section.1.13}
+\contentsline {subsection}{\numberline {1.13.1}Definizione di schema di una base dati}{15}{subsection.1.13.1}
+\contentsline {subsection}{\numberline {1.13.2}Stato di una base di dati}{15}{subsection.1.13.2}
+\contentsline {section}{\numberline {1.14}Considerazione finale sul modello relazionale}{15}{section.1.14}
+\contentsline {chapter}{\numberline {2}Algebra relazionale}{16}{chapter.2}
+\contentsline {section}{\numberline {2.1}Operatore selezione}{16}{section.2.1}
+\contentsline {subsection}{\numberline {2.1.1}Sintassi del predicato di selezione}{17}{subsection.2.1.1}
+\contentsline {subsection}{\numberline {2.1.2}Cardinalit\IeC {\`a} della selezione}{17}{subsection.2.1.2}
+\contentsline {subsubsection}{Esempi}{17}{section*.3}
+\contentsline {section}{\numberline {2.2}Operatore proiezione}{17}{section.2.2}
+\contentsline {subsection}{\numberline {2.2.1}Cardinalit\IeC {\`a} della proiezione}{18}{subsection.2.2.1}
+\contentsline {subsubsection}{Esempi}{18}{section*.4}
+\contentsline {section}{\numberline {2.3}Composizione di operatori}{19}{section.2.3}
+\contentsline {subsubsection}{Esempio}{19}{section*.5}
+\contentsline {section}{\numberline {2.4}Operatori insiemistici: unione e differenza}{19}{section.2.4}
+\contentsline {subsection}{\numberline {2.4.1}Cardinalit\IeC {\`a} dell'unione}{20}{subsection.2.4.1}
+\contentsline {subsection}{\numberline {2.4.2}Cardinalit\IeC {\`a} della differenza}{20}{subsection.2.4.2}
+\contentsline {subsubsection}{Esempi}{20}{section*.6}
+\contentsline {section}{\numberline {2.5}Operatore intersezione}{21}{section.2.5}
+\contentsline {subsection}{\numberline {2.5.1}Cardinalit\IeC {\`a} dell'intersezione}{21}{subsection.2.5.1}
+\contentsline {section}{\numberline {2.6}Operatore ridenominazione}{21}{section.2.6}
+\contentsline {subsubsection}{Esempio}{21}{section*.7}
+\contentsline {section}{\numberline {2.7}Uso corretto degli operatori insiemistici}{21}{section.2.7}
+\contentsline {section}{\numberline {2.8}Ridenominazione schema}{22}{section.2.8}
+\contentsline {section}{\numberline {2.9}Prodotto cartesiano}{22}{section.2.9}
+\contentsline {subsubsection}{Esempi}{23}{section*.8}
+\contentsline {subsection}{\numberline {2.9.1}Cardinalit\IeC {\`a} del prodotto cartesiano}{23}{subsection.2.9.1}
+\contentsline {section}{\numberline {2.10}Operatore $\bowtie _{\theta }$}{23}{section.2.10}
+\contentsline {subsubsection}{Esempi}{24}{section*.9}
+\contentsline {subsection}{\numberline {2.10.1}Cardinalit\IeC {\`a} del $\bowtie _{\theta }$}{24}{subsection.2.10.1}
+\contentsline {subsection}{\numberline {2.10.2}Join con schemi non disgiunti}{25}{subsection.2.10.2}
+\contentsline {subsubsection}{Esempio}{25}{section*.10}
+\contentsline {subsection}{\numberline {2.10.3}Semplificazione della ridenominazione}{26}{subsection.2.10.3}
+\contentsline {section}{\numberline {2.11}Operatore Natural-Join}{26}{section.2.11}
+\contentsline {section}{\numberline {2.12}Operatore Semi-Join}{26}{section.2.12}
+\contentsline {subsubsection}{Esempi}{26}{section*.11}
+\contentsline {subsection}{\numberline {2.12.1}Cardinalit\IeC {\`a} del semi-join}{27}{subsection.2.12.1}
+\contentsline {section}{\numberline {2.13}Join esterni}{27}{section.2.13}
+\contentsline {subsection}{\numberline {2.13.1}Left Join}{27}{subsection.2.13.1}
+\contentsline {subsection}{\numberline {2.13.2}Right Join}{27}{subsection.2.13.2}
+\contentsline {subsection}{\numberline {2.13.3}Full Join}{27}{subsection.2.13.3}
+\contentsline {chapter}{\numberline {3}Tipologie di interrogazioni}{28}{chapter.3}
+\contentsline {section}{\numberline {3.1}Interrogazioni con negazione}{28}{section.3.1}
+\contentsline {subsection}{\numberline {3.1.1}Negazione esssenziale}{28}{subsection.3.1.1}
+\contentsline {subsection}{\numberline {3.1.2}Esempi}{29}{subsection.3.1.2}
+\contentsline {section}{\numberline {3.2}Interrogazioni con quantificazione universale}{29}{section.3.2}
+\contentsline {subsection}{\numberline {3.2.1}Operatore deerivato quoziente}{29}{subsection.3.2.1}
+\contentsline {subsubsection}{Esempio1}{29}{section*.12}
+\contentsline {subsubsection}{Esempio 2}{30}{section*.13}
+\contentsline {section}{\numberline {3.3}Semantica di Codd del valore nullo}{31}{section.3.3}
+\contentsline {section}{\numberline {3.4}Logica a tre valori}{31}{section.3.4}
+\contentsline {subsection}{\numberline {3.4.1}Operatori e logica a tre valori}{32}{subsection.3.4.1}
+\contentsline {subsection}{\numberline {3.4.2}Espressioni e logica a tre valori}{32}{subsection.3.4.2}
+\contentsline {subsection}{\numberline {3.4.3}Limiti della logica a tre valori}{33}{subsection.3.4.3}
+\contentsline {subsubsection}{Esempio}{33}{section*.14}
+\contentsline {subsection}{\numberline {3.4.4}Perch\IeC {\'e} la logica a tre valori}{33}{subsection.3.4.4}
+\contentsline {section}{\numberline {3.5}Propriet\IeC {\`a} degli operatori algebrici}{34}{section.3.5}
+\contentsline {subsection}{\numberline {3.5.1}Propriet\IeC {\`a} commutativa del prodotto cartesiano}{34}{subsection.3.5.1}
+\contentsline {subsection}{\numberline {3.5.2}Propriet\IeC {\`a} commutativa del $\theta $-join}{34}{subsection.3.5.2}
+\contentsline {subsection}{\numberline {3.5.3}Propriet\IeC {\`a} associativa del prodotto cartesiano}{34}{subsection.3.5.3}
+\contentsline {subsection}{\numberline {3.5.4}Propriet\IeC {\`a} associativa del $\theta $-join}{34}{subsection.3.5.4}
+\contentsline {subsection}{\numberline {3.5.5}Propriet\IeC {\`a} della selezione multipla}{35}{subsection.3.5.5}
+\contentsline {subsection}{\numberline {3.5.6}Propriet\IeC {\`a} della sostituzione di operatori}{35}{subsection.3.5.6}
+\contentsline {subsection}{\numberline {3.5.7}Propriet\IeC {\`a} distributiva della selezione rispetto alla proiezione}{35}{subsection.3.5.7}
+\contentsline {subsection}{\numberline {3.5.8}Propriet\IeC {\`a} distributiva della selezione rispetto al prodotto cartesiano}{36}{subsection.3.5.8}
+\contentsline {subsection}{\numberline {3.5.9}Propriet\IeC {\`a} distributiva della selezione rispetto al join}{36}{subsection.3.5.9}
+\contentsline {subsection}{\numberline {3.5.10}Propriet\IeC {\`a} distributiva della selezione rispetto all'unione e differenza}{36}{subsection.3.5.10}
+\contentsline {subsection}{\numberline {3.5.11}Propriet\IeC {\`a} della proiezione multipla}{36}{subsection.3.5.11}
+\contentsline {subsection}{\numberline {3.5.12}Propriet\IeC {\`a} distributiva della proiezione rispetto al prodotto cartesiano}{37}{subsection.3.5.12}
+\contentsline {subsection}{\numberline {3.5.13}Propriet\IeC {\`a} distributiva della proiezione rispetto al join}{37}{subsection.3.5.13}
+\contentsline {subsection}{\numberline {3.5.14}Propriet\IeC {\`a} distributiva della proiezione rispetto all'unione}{37}{subsection.3.5.14}
+\contentsline {subsection}{\numberline {3.5.15}Altre propriet\IeC {\`a}}{37}{subsection.3.5.15}
+\contentsline {chapter}{\numberline {4}Calcolo relazionale}{38}{chapter.4}
+\contentsline {section}{\numberline {4.1}Calcolo su tuple con dichiarazione di range}{38}{section.4.1}
+\contentsline {subsection}{\numberline {4.1.1}Join nel calcolo relazionale}{39}{subsection.4.1.1}
+\contentsline {subsection}{\numberline {4.1.2}Quantificazione universale ed esistenziale}{39}{subsection.4.1.2}
+\contentsline {subsection}{\numberline {4.1.3}Negazione essenziale}{40}{subsection.4.1.3}
+\contentsline {subsection}{\numberline {4.1.4}Prodotto cartesiano}{41}{subsection.4.1.4}
+\contentsline {subsection}{\numberline {4.1.5}Unione}{41}{subsection.4.1.5}
+\contentsline {subsection}{\numberline {4.1.6}Limiti del calcolo relazionale}{41}{subsection.4.1.6}
+\contentsline {subsubsection}{Esempio}{41}{section*.15}
+\contentsline {subsubsection}{Esempio}{42}{section*.16}
+\contentsline {chapter}{\numberline {5}Normalizzazione}{43}{chapter.5}
+\contentsline {section}{\numberline {5.1}Ridondanze e anomalie}{43}{section.5.1}
+\contentsline {section}{\numberline {5.2}Dipendenze funzionali}{44}{section.5.2}
+\contentsline {section}{\numberline {5.3}Teoria di Armstrong}{45}{section.5.3}
+\contentsline {subsection}{\numberline {5.3.1}Assiomi della teoria di Armstrong}{45}{subsection.5.3.1}
+\contentsline {subsection}{\numberline {5.3.2}Vincolo di dipendenza funzionale}{45}{subsection.5.3.2}
+\contentsline {subsubsection}{Teorema dell'espansione}{45}{section*.17}
+\contentsline {subsubsection}{Teorema di decomposizione}{46}{section*.18}
+\contentsline {subsubsection}{Teorema di pseudo-transitivit\IeC {\`a}}{46}{section*.19}
+\contentsline {subsubsection}{Teorema del prodotto}{46}{section*.20}
+\contentsline {subsection}{\numberline {5.3.3}Attributi estranei}{46}{subsection.5.3.3}
+\contentsline {section}{\numberline {5.4}Forma normale di Boyce e Codd}{46}{section.5.4}
+\contentsline {subsection}{\numberline {5.4.1}Definizione di forma normale di Boyce e Codd}{46}{subsection.5.4.1}
+\contentsline {subsection}{\numberline {5.4.2}Decomposizione in forma normale di Boyce e Codd}{47}{subsection.5.4.2}
+\contentsline {section}{\numberline {5.5}Propriet\IeC {\`a} delle decomposizioni}{47}{section.5.5}
+\contentsline {subsection}{\numberline {5.5.1}Decomposizione senza perdita}{47}{subsection.5.5.1}
+\contentsline {subsection}{\numberline {5.5.2}Conservazione delle dipendenze}{48}{subsection.5.5.2}
+\contentsline {subsection}{\numberline {5.5.3}Qualit\IeC {\`a} delle decomposizioni}{48}{subsection.5.5.3}
+\contentsline {section}{\numberline {5.6}Terza forma normale}{48}{section.5.6}
+\contentsline {subsection}{\numberline {5.6.1}Limitazioni della forma normale di Boyce e Codd}{48}{subsection.5.6.1}
+\contentsline {subsection}{\numberline {5.6.2}Definizione di terza forma normale}{49}{subsection.5.6.2}
+\contentsline {subsection}{\numberline {5.6.3}Decomposizione in terza forma normale}{49}{subsection.5.6.3}
+\contentsline {section}{\numberline {5.7}Teoria delle dipendenze e normalizzazione}{49}{section.5.7}
+\contentsline {subsection}{\numberline {5.7.1}Implicazione di dipendenze funzionali}{50}{subsection.5.7.1}
+\contentsline {subsubsection}{Chiusura di un insieme\\ Dati $F$ e $f$, come verifichiamo se $F$ implica $f$?}{50}{section*.21}
+\contentsline {subsubsection}{Esempio}{50}{section*.22}
+\contentsline {subsection}{\numberline {5.7.2}Coperture di insiemi di dipendenze funzionali}{51}{subsection.5.7.2}
+\contentsline {subsubsection}{Esempio}{52}{section*.23}
+\contentsline {subsection}{\numberline {5.7.3}Sintesi di schemi in terza forma normale}{52}{subsection.5.7.3}
+\contentsline {chapter}{\numberline {6}Architettura dei DBMS}{54}{chapter.6}
+\contentsline {section}{\numberline {6.1}Memoria centrale}{55}{section.6.1}
+\contentsline {subsection}{\numberline {6.1.1}Le pagine}{55}{subsection.6.1.1}
+\contentsline {subsubsection}{Caricamento delle pagine}{56}{section*.24}
+\contentsline {subsubsection}{Semplificazione}{56}{section*.25}
+\contentsline {subsubsection}{Tempi di trasferimento}{56}{section*.26}
+\contentsline {subsubsection}{Struttura di una pagina}{57}{section*.27}
+\contentsline {part}{II\hspace {1em}SQL}{58}{part.2}
+\contentsline {chapter}{\numberline {7}Introduzione}{59}{chapter.7}
+\contentsline {section}{\numberline {7.1}PostgreSQL}{59}{section.7.1}
+\contentsline {section}{\numberline {7.2}Domini dei dati}{60}{section.7.2}
+\contentsline {subsection}{\numberline {7.2.1}Caratteri e stringhe}{60}{subsection.7.2.1}
+\contentsline {subsection}{\numberline {7.2.2}Tipi numerici esatti}{60}{subsection.7.2.2}
+\contentsline {subsection}{\numberline {7.2.3}Tipi numerici approssimati}{61}{subsection.7.2.3}
+\contentsline {subsection}{\numberline {7.2.4}Date}{61}{subsection.7.2.4}
+\contentsline {subsection}{\numberline {7.2.5}Intervalli}{62}{subsection.7.2.5}
+\contentsline {subsection}{\numberline {7.2.6}Altri domini}{62}{subsection.7.2.6}
+\contentsline {subsection}{\numberline {7.2.7}Domini personalizzati}{62}{subsection.7.2.7}
+\contentsline {section}{\numberline {7.3}Definizione di tabelle}{63}{section.7.3}
+\contentsline {subsection}{\numberline {7.3.1}Valori di default}{64}{subsection.7.3.1}
+\contentsline {section}{\numberline {7.4}Definizione dei vincoli}{64}{section.7.4}
+\contentsline {subsection}{\numberline {7.4.1}Vincoli intrarelazionali predefiniti}{65}{subsection.7.4.1}
+\contentsline {subsubsection}{Vincoli interrelazionali predefiniti}{67}{section*.28}
+\contentsline {subsubsection}{Violazione del vincolo di integrit\IeC {\`a} referenziale}{68}{section*.29}
+\contentsline {subsubsection}{Esempio}{69}{section*.30}
+\contentsline {section}{\numberline {7.5}Modifiche alle definizioni}{69}{section.7.5}
+\contentsline {chapter}{\numberline {8}Query di Base}{71}{chapter.8}
+\contentsline {subsubsection}{Esempio 1}{71}{section*.31}
+\contentsline {section}{\numberline {8.1}Clausola \texttt {select}}{72}{section.8.1}
+\contentsline {subsubsection}{Esempio 2}{72}{section*.32}
+\contentsline {subsubsection}{Esempio 3}{72}{section*.33}
+\contentsline {section}{\numberline {8.2}Clausola \texttt {from}}{73}{section.8.2}
+\contentsline {subsubsection}{Esempio 4}{73}{section*.34}
+\contentsline {subsubsection}{Esempio 5}{74}{section*.35}
+\contentsline {section}{\numberline {8.3}Clausola \texttt {where}}{74}{section.8.3}
+\contentsline {subsubsection}{Esempio 6}{75}{section*.36}
+\contentsline {subsubsection}{Esempio 7}{75}{section*.37}
+\contentsline {subsubsection}{Esempio 8}{76}{section*.38}
+\contentsline {subsubsection}{Esempio 9}{76}{section*.39}
+\contentsline {section}{\numberline {8.4}Gestione dei valori nulli}{76}{section.8.4}
+\contentsline {section}{\numberline {8.5}Duplicati}{77}{section.8.5}
+\contentsline {subsubsection}{Esempio 10}{78}{section*.40}
+\contentsline {subsubsection}{Esempio 11}{78}{section*.41}
+\contentsline {section}{\numberline {8.6}Uso di variabili}{79}{section.8.6}
+\contentsline {subsubsection}{Esempio 12}{79}{section*.42}
+\contentsline {section}{\numberline {8.7}Ordinamento}{80}{section.8.7}
+\contentsline {subsubsection}{Esempio 13}{80}{section*.43}
+\contentsline {chapter}{\numberline {9}Join}{81}{chapter.9}
+\contentsline {subsubsection}{Esempio 1}{82}{section*.44}
+\contentsline {subsubsection}{Esempio 2}{82}{section*.45}
+\contentsline {subsubsection}{Esempio 3}{83}{section*.46}
+\contentsline {subsubsection}{Esempio 4}{83}{section*.47}
+\contentsline {chapter}{\numberline {10}Aggregati}{85}{chapter.10}
+\contentsline {section}{\numberline {10.1}Operatori aggregati}{85}{section.10.1}
+\contentsline {subsection}{\numberline {10.1.1}Operatore \texttt {count}}{85}{subsection.10.1.1}
+\contentsline {subsubsection}{Esempio 1}{86}{section*.48}
+\contentsline {subsubsection}{Esempio 2}{86}{section*.49}
+\contentsline {subsubsection}{Esempio 3}{86}{section*.50}
+\contentsline {subsection}{\numberline {10.1.2}Altri operatori aggregati}{87}{subsection.10.1.2}
+\contentsline {subsubsection}{Esempio 4}{87}{section*.51}
+\contentsline {section}{\numberline {10.2}Interrogazioni con raggruppamento}{88}{section.10.2}
+\contentsline {subsubsection}{Esempio 5}{88}{section*.52}
+\contentsline {subsubsection}{Esempio 6}{89}{section*.53}
+\contentsline {subsection}{\numberline {10.2.1}Predicati sui gruppi}{89}{subsection.10.2.1}
+\contentsline {subsubsection}{Esempio 7}{90}{section*.54}
+\contentsline {subsubsection}{Esempio 8}{91}{section*.55}
+\contentsline {chapter}{\numberline {11}Operatori Insiemistici}{92}{chapter.11}
+\contentsline {subsubsection}{Esempio 1}{93}{section*.56}
+\contentsline {subsubsection}{Esempio 2}{93}{section*.57}
+\contentsline {subsubsection}{Esempio 3}{94}{section*.58}
+\contentsline {subsubsection}{Esempio 3}{94}{section*.59}
+\contentsline {chapter}{\numberline {12}Query Nidificate}{96}{chapter.12}
+\contentsline {subsubsection}{Esempio 1}{97}{section*.60}
+\contentsline {subsubsection}{Esempio 2}{97}{section*.61}
+\contentsline {subsubsection}{Esempio 3}{98}{section*.62}
+\contentsline {subsubsection}{Esempio 4}{98}{section*.63}
+\contentsline {section}{\numberline {12.1}Interrogazioni nidificate complesse}{99}{section.12.1}
+\contentsline {subsubsection}{Esempio 5}{100}{section*.64}
+\contentsline {subsubsection}{Esempio 6}{101}{section*.65}
+\contentsline {subsubsection}{Esempio 5}{102}{section*.66}
+\contentsline {chapter}{\numberline {13}Modifica dei dati}{103}{chapter.13}
+\contentsline {section}{\numberline {13.1}Inserimento}{103}{section.13.1}
+\contentsline {section}{\numberline {13.2}Cancellazione}{104}{section.13.2}
+\contentsline {section}{\numberline {13.3}Modifica}{104}{section.13.3}
+\contentsline {part}{III\hspace {1em}Progettazione}{107}{part.3}
+\contentsline {chapter}{\numberline {14}Metodologie e Modelli per il progetto}{108}{chapter.14}
+\contentsline {section}{\numberline {14.1}Introduzione alla progettazione}{108}{section.14.1}
+\contentsline {subsection}{\numberline {14.1.1}Il ciclo di vita dei sistemi informativi}{108}{subsection.14.1.1}
+\contentsline {subsection}{\numberline {14.1.2}Metodologie di progettazione e basi di dati}{109}{subsection.14.1.2}
+\contentsline {section}{\numberline {14.2}Il modello E-R}{112}{section.14.2}
+\contentsline {subsection}{\numberline {14.2.1}I costrutti principali del modello}{112}{subsection.14.2.1}
+\contentsline {section}{\numberline {14.3}Panoramica finale sul modello E-R}{117}{section.14.3}
+\contentsline {section}{\numberline {14.4}Documentazione di schemi E-R}{118}{section.14.4}
+\contentsline {subsection}{\numberline {14.4.1}Regole aziendali}{118}{subsection.14.4.1}
+\contentsline {subsection}{\numberline {14.4.2}Tecniche di documentazione}{119}{subsection.14.4.2}
+\contentsline {chapter}{\numberline {15}Progettazione Concettuale}{121}{chapter.15}
+\contentsline {section}{\numberline {15.1}Raccolta e analisi dei requisiti}{121}{section.15.1}
+\contentsline {subsection}{\numberline {15.1.1}Fonti dei requisiti}{121}{subsection.15.1.1}
+\contentsline {subsection}{\numberline {15.1.2}Specifica dei requisiti}{122}{subsection.15.1.2}
+\contentsline {subsection}{\numberline {15.1.3}Specifiche sulle operazioni}{123}{subsection.15.1.3}
+\contentsline {section}{\numberline {15.2}Criteri per la rappresentazione dei dati}{123}{section.15.2}
+\contentsline {subsection}{\numberline {15.2.1}Criteri generali di rappresentazione}{123}{subsection.15.2.1}
+\contentsline {subsection}{\numberline {15.2.2}Qualit\IeC {\`a} di uno schema concettuale}{123}{subsection.15.2.2}
+\contentsline {subsubsection}{Correttezza}{123}{section*.67}
+\contentsline {subsubsection}{Completezza}{124}{section*.68}
+\contentsline {subsubsection}{Leggibilit\IeC {\`a}}{124}{section*.69}
+\contentsline {subsubsection}{Minimalit\IeC {\`a}}{124}{section*.70}
+\contentsline {chapter}{\numberline {16}Progettazione Logica}{125}{chapter.16}
+\contentsline {section}{\numberline {16.1}Fasi della progettazione logica}{125}{section.16.1}
+\contentsline {section}{\numberline {16.2}Analisi delle prestazioni su schemi E-R}{126}{section.16.2}
+\contentsline {section}{\numberline {16.3}Ristrutturazione di schemi E-R}{128}{section.16.3}
+\contentsline {subsection}{\numberline {16.3.1}Analisi delle ridondanze}{128}{subsection.16.3.1}
+\contentsline {subsection}{\numberline {16.3.2}Eliminazione delle generalizzazioni}{129}{subsection.16.3.2}
+\contentsline {subsection}{\numberline {16.3.3}Partizionamento/accorpamento di concetti}{132}{subsection.16.3.3}
+\contentsline {subsubsection}{Partizionamenti di entit\IeC {\`a}}{133}{section*.71}
+\contentsline {subsubsection}{Eliminazione di attributi multivalore}{133}{section*.72}
+\contentsline {subsubsection}{Accorpamento di entit\IeC {\`a}}{134}{section*.73}
+\contentsline {subsubsection}{Altri tipi di partizionamento/accorpamento}{134}{section*.74}
+\contentsline {subsection}{\numberline {16.3.4}Scelta degli identificatori principali}{134}{subsection.16.3.4}
+\contentsline {section}{\numberline {16.4}Traduzione verso il modello relazionale}{135}{section.16.4}
+\contentsline {subsection}{\numberline {16.4.1}Entit\IeC {\`a} e associazioni molti a molti}{135}{subsection.16.4.1}
+\contentsline {subsection}{\numberline {16.4.2}Associazioni uno a molti}{138}{subsection.16.4.2}
+\contentsline {subsection}{\numberline {16.4.3}Entit\IeC {\`a} con identificatore esterno}{139}{subsection.16.4.3}
+\contentsline {subsection}{\numberline {16.4.4}Associazioni uno a uno}{140}{subsection.16.4.4}
+\contentsline {section}{\numberline {16.5}Documentazione di schemi logici}{142}{section.16.5}

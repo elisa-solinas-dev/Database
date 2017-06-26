@@ -1,0 +1,100 @@
+\chapter{Join}
+
+Abbiamo visto come specificare il join attraverso una clausola \texttt{where} sul prodotto cartesiano.\\
+SQL implementa anche una sintassi più immediata, attraverso l'utilizzo della parola chiave \texttt{join}.
+    \begin{lstlisting}{Sintassi del join}
+        select
+        from
+            Tabella1 [as Alias1]
+            [TipoJoin] join 
+            Tabella2 [as Alias2]
+                on CondizioneJoin
+        [where AltraCondizione]
+    \end{lstlisting}
+Mediante questa sintassi la condizione di join non compare come argomento della clausola \texttt{where}, ma viene invece spostata nell'ambito della clausola \texttt{from}, associata alle tabelle che vengono coinvolte nel join.\\\\
+Il parametro \texttt{TipoJoin} specifica qual è il tipo di join da usare, e ad esso si possono sostituire i termini \texttt{inner, right outer, left outer, full outer} (il qualificatore \texttt{outer} è opzionale).\\\\
+Con il join intenro le righe che vengono coinvolte nel join sono in generale un sottoinsieme delle righe di ciascuna tabella. Può, infatti, capitare che alcune righe non vengano considerate in quanto non esiste una corrispondente riga nell'altra tabella per cui la condizione sia soddisfatta. Questo comportamento spesso non rispetta le esigenze delle applicazioni, le quali, all'eliminazione delle righe operata dal join, possono preferire di mantenere le righe, introducendo dei valori nulli per rappresentare l'assenza di informazioni provenienti dall'altra tabella.\\\\
+Il join esterno, invece, esegue un join mantenendo tutte le righe che fanno parte di una o entrambe le tabelle coinvolte.\\
+Esistono tre varianti dei join esterni: \texttt{left}, \texttt{right} e \texttt{full}. Il \texttt{left join} fornisce come risultato il join esterno esteso con le righe della tabella che compare a sinistra per le quali non esiste una corrispondente riga nella tabella di destra.\\
+Il \texttt{right join} si comporta in modo simmetrico (conserva le righe escluse della tabella di destra).\\
+Infine, il \texttt{full join} restituisce il join interno esteso con le righe escluse di entrambe le tabelle.\\\\
+Possiamo, inoltre, realizzare il \texttt{natural join} utilizzando nel join di due tabelle una condizione implicita di uguaglianza su tutti gli attributi caratterizzati dallo stesso nome.\\
+Nonostante il vantaggio di una scrittura più compatta, il join naturale non è normalmente consigliabile (e spesso non è offerto dai sistemi commerciali). Un motivo è che un'interrogazione che usa il join naturale può introdurre dei rischi nelle applicazioni, in quanto il suo comportamento può mutare profondamente al variare dello schema delle tabelle.
+
+\subsubsection{Esempio 1}
+Consideriamo la seguente base dati:
+    \begin{equation}\begin{aligned}
+        IMPIEGATO (\underline{Nome, Cognome}, Dipartimento, Ufficio, Stipendio, Citta)\\
+        DIPARTIMENTO (\underline{Nome}, Indirizzo, Citta)
+    \end{aligned}\end{equation}
+Estrarre i nomi degli impiegati e le città in cui lavorano utilizzando degli alias per le tabelle
+    \begin{lstlisting}{Esempio 1}
+        select 
+            I.Nome, 
+            I.Cognome, 
+            D.Citta
+        from 
+            Impiegato as I
+            join 
+            Dipartimento as D
+                on (I.Dipartimento = D.Nome)
+    \end{lstlisting}
+    
+\subsubsection{Esempio 2}
+Consideriamo la seguente base dati:
+    \begin{equation}\begin{aligned}
+        GUIDATORE (\underline{NroPatente}, Nome, Cognome)\\
+        AUTOMOBILE (\underline{Targa}, Modello, NroPatente)
+    \end{aligned}\end{equation}
+Estrarre i guidatori con le automobili loro associate, mantenendo nel risultato anche i guidatori senza automobile
+    \begin{lstlisting}{Esempio 2}
+        select 
+            G.Nome,
+            G.Cognome
+        from 
+            Guidatore as G
+            left join 
+            Automobile as A
+                on (G.NroPatente = A.NroPatente)
+    \end{lstlisting}
+
+\subsubsection{Esempio 3}
+Consideriamo la seguente base dati:
+    \begin{equation}\begin{aligned}
+        GUIDATORE (\underline{NroPatente}, Nome, Cognome)\\
+        AUTOMOBILE (\underline{Targa}, Modello, NroPatente)
+    \end{aligned}\end{equation}
+Estrarre tutti i guidatori e tutte le auto, mostrando tutte le relazioni esistenti tra di essi.
+    \begin{lstlisting}{Esempio 3}
+        select 
+            G.Nome,
+            G.Cognome, 
+            G.NroPatente,
+            A.Targa,
+            A.Modello
+        from 
+            Guidatore as G
+            full join 
+            Automobile as A
+                on (G.NroPatente = A.NroPatente)
+    \end{lstlisting}
+    
+\subsubsection{Esempio 4}
+Consideriamo la seguente base dati:
+    \begin{equation}\begin{aligned}
+        GUIDATORE (\underline{NroPatente}, Nome, Cognome)\\
+        AUTOMOBILE (\underline{Targa}, Modello, NroPatente)
+    \end{aligned}\end{equation}
+Estrarre tutti i guidatori e tutte le auto, mostrando tutte le relazioni esistenti tra di essi.
+    \begin{lstlisting}{Esempio 4}
+        select 
+            G.Nome,
+            G.Cognome, 
+            G.NroPatente,
+            A.Targa,
+            A.Modello
+        from 
+            Guidatore as G
+            natural join 
+            Automobile as A
+    \end{lstlisting}

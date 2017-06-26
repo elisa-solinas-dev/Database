@@ -1,0 +1,310 @@
+\chapter{Query di Base}
+
+Le operazioni di interrogazione in SQL vengono specificate per mezzo dell'istruzione \texttt{select}.\\
+Vediamone la struttura essenziale:
+    \begin{lstlisting}
+        select Attributo1 [[as] AliasAttributo1]...
+        from Tabella1 [[as] AliasTabella1], ...
+        [where Condizione]
+    \end{lstlisting}
+Le tre parti di cui si compone un'istruzione \texttt{select} vengono spesso chiamate:
+    \begin{itemize}
+        \item{Clausola \texttt{select}}
+        \item{Clausola \texttt{from}}
+        \item{Clausola \texttt{where}}
+    \end{itemize}
+L'interrogazione SQL seleziona, tra le righe che appartengono al prodotto cartesiano delle tabelle elencate nella clausola \texttt{from}, quelle che soddisfano le condizioni espresse nell'argomento della clausola \texttt{where}.\\
+Il risultato dell'esecuzione di un'interrogazione SQL è quindi una tabella con una riga per ogni riga prodotta dalla clausola \texttt{from} e filtrata dalla clausola \texttt{where}, le cui colonne si ottengono dalla valutazione delle espressioni che appaiono nella clausola \texttt{select}.\\
+Ogni colonna viene eventualmente ridenominata con l'\texttt{Alias} specificato.
+
+\subsubsection{Esempio 1}
+Consideriamo la seguente base dati:
+    \begin{equation}\begin{aligned}
+        IMPIEGATO (\underline{Nome, Cognome}, Dipartimento, Ufficio, Stipendio, Citta)\\
+        DIPARTIMENTO (\underline{Nome}, Indirizzo, Citta)
+    \end{aligned}\end{equation}
+Estrarre lo stipendio degli impiegati di cognome "Rossi":
+    \begin{lstlisting}{Esempio 1}
+        select 
+            Stipendio as Salario
+        from 
+            Impiegato
+        where 
+            Cognome = 'Rossi'
+    \end{lstlisting}
+Se non vi sono impiegati di cognome "Rossi", l'interrogazione restituirà un insieme vuoto, altrimenti, un insieme con tante righe quanti sono tali impiegati. 
+
+
+\section{Clausola \texttt{select}}
+La clausola \texttt{select} specifica gli elementi dello schema della tabella risultato.\\
+Come argomento della \texttt{select} può anche comparire il carattere speciale $*$, che rappresenta la selezione di tutti gli attributi delle tabella indicate nelle \texttt{from}.\\\\
+Inoltre, nella \texttt{select} possono comparire generiche espressioni sul valore degli attributi di ciascuna riga selezionata.
+
+\subsubsection{Esempio 2}
+Consideriamo la seguente base dati:
+    \begin{equation}\begin{aligned}
+        IMPIEGATO (\underline{Nome, Cognome}, Dipartimento, Ufficio, Stipendio, Citta)\\
+        DIPARTIMENTO (\underline{Nome}, Indirizzo, Citta)
+    \end{aligned}\end{equation}
+Estrarre tutte le informazioni relative agli impiegati di cognome "Rossi"
+    \begin{lstlisting}{Esempio 2}
+        select *
+        from 
+            Impiegato
+        where 
+            Cognome = 'Rossi'
+    \end{lstlisting}
+
+\subsubsection{Esempio 3}
+Consideriamo la seguente base dati:
+    \begin{equation}\begin{aligned}
+        IMPIEGATO (\underline{Nome, Cognome}, Dipartimento, Ufficio, Stipendio, Citta)\\
+        DIPARTIMENTO (\underline{Nome}, Indirizzo, Citta)
+    \end{aligned}\end{equation}
+Estrarre lo stipendio mensile dell'impiegato che ha cognome "Bianchi"
+    \begin{lstlisting}{Esempio 3}
+        select 
+            Stipendio/12 as StipendioMensile
+        from 
+            Impiegato
+        where 
+            Cognome = 'Bianchi'
+    \end{lstlisting}
+
+
+
+\section{Clausola \texttt{from}}
+Quando si desidera formulare un'interrogazione che coinvolge righe appartenenti a più di una tabella, si pone come argomento della \texttt{from} l'insieme di tabelle alle quali si vuole accedere. Sul prodotto cartesiano delle tabelle elenecate verranno poi applicate le condizioni della \texttt{where}.\\
+Quindi, un join può essere specificato indicando in modo esplicito le condizioni che esprimono il legame tra le diverse tabelle.\\
+Quando abbiamo a che fare con più tabelle, può accadere che compaiano attributi omonimi: in questo caso è possibile utilizzare gli alias oppure utilizzare la notazione "." specificando prima del punto la tabella da cui prendiamo l'attributo (\texttt{Tabella.Attributo}).
+
+\subsubsection{Esempio 4}
+Consideriamo la seguente base dati:
+    \begin{equation}\begin{aligned}
+        IMPIEGATO (\underline{Nome, Cognome}, Dipartimento, Ufficio, Stipendio, Citta)\\
+        DIPARTIMENTO (\underline{Nome}, Indirizzo, Citta)
+    \end{aligned}\end{equation}
+Estrarre i nomi degli impiegati e le città in cui lavorano
+    \begin{lstlisting}{Esempio 4}
+        select 
+            Impiegato.Nome,
+            Impiegato.Cognome, 
+            Dipartimento.Citta
+        from 
+            Impiegato, Dipartimento
+        where 
+            Impiegato.Dipartimento = Dipartimento.Nome
+    \end{lstlisting}
+
+\subsubsection{Esempio 5}
+Consideriamo la seguente base dati:
+    \begin{equation}\begin{aligned}
+        IMPIEGATO (\underline{Nome, Cognome}, Dipartimento, Ufficio, Stipendio, Citta)\\
+        DIPARTIMENTO (\underline{Nome}, Indirizzo, Citta)
+    \end{aligned}\end{equation}
+Estrarre i nomi degli impiegati e le città in cui lavorano utilizzando degli alias per le tabelle
+    \begin{lstlisting}{Esempio 5}
+        select 
+            I.Nome, 
+            I.Cognome, 
+            D.Citta
+        from 
+            Impiegato as I, 
+            Dipartimento as D
+        where 
+            I.Dipartimento = D.Nome
+    \end{lstlisting}
+
+
+
+\section{Clausola \texttt{where}}
+La clausola \texttt{where} ammette come argomento un'espressione booleana costituita combinando predicati semplici con gli operatori $AND$, $OR$ e $NOT$.\\
+Ciascun predicato utilizza gli operatori di confronto ($=, <>, <, <=, >, >=$) per confrontare da un lato un'espressione costruita a partire dai valori degli attributi per la riga, e dall'altro lato un valore costante o un'altra espressione.\\\\
+La sintassi assegna la precedenza all'operatore $NOT$, ma non definisce una relazione di precedenza tra l'$AND$ e l'$OR$. Se è necessario esprimere un'interrogazione che richieda sia l'uso dell'$AND$ che del $NOT$, conviene esplicitare l'ordine di valutazione mediante le parentesi.\\\\
+Oltre ai normali predicati di confronto, SQL mette a disposizione un operatore \texttt{like} per il confronto di stringhe, che permette di effettuare confronti con stringhe in cui compaiono caratteri speciali ($\_$) oppure $\%$.\\
+Il carattere $\_$ rappresenta nel confronto un carattere arbitrario, mentre il carattere $\%$ rappresenta una stringa di un numero arbitrario (eventualmente nullo) di caratteri arbitrari.\\
+Un confronto del tipo $\texttt{like} ab\%ba\_$ sarà soddisfatto da una qualunque stringa di caratteri che inizi con $ab$ e la stringa $ba$ prima dell'ultima posizione.
+
+\subsubsection{Esempio 6}
+Consideriamo la seguente base dati:
+    \begin{equation}\begin{aligned}
+        IMPIEGATO (\underline{Nome, Cognome}, Dipartimento, Ufficio, Stipendio, Citta)\\
+        DIPARTIMENTO (\underline{Nome}, Indirizzo, Citta)
+    \end{aligned}\end{equation}
+Estrarre il nome e il cognome degli impiegati che lavorano nell'ufficio 20 del dipartimento $Amministrazione$
+    \begin{lstlisting}{Esempio 6}
+        select 
+            I.Nome, 
+            I.Cognome
+        from 
+            Impiegato as I
+        where 
+            I.Ufficio = 20
+            and I.Dipartimento = 'Amministrazione'
+    \end{lstlisting}
+    
+\subsubsection{Esempio 7}
+Consideriamo la seguente base dati:
+    \begin{equation}\begin{aligned}
+        IMPIEGATO (\underline{Nome, Cognome}, Dipartimento, Ufficio, Stipendio, Citta)\\
+        DIPARTIMENTO (\underline{Nome}, Indirizzo, Citta)
+    \end{aligned}\end{equation}
+Estrarre i nomi e i cognomi degli impiegati che lavorano al dipartimento $Amministrazione$ o al dipartimento $Produzione$.
+    \begin{lstlisting}{Esempio 7}
+        select 
+            I.Nome,
+            I.Cognome
+        from 
+            Impiegato as I
+        where 
+            I.Dipartimento = 'Amministrazione'
+            or I.Dipartimento = 'Produzione'
+    \end{lstlisting}
+    
+\subsubsection{Esempio 8}
+Consideriamo la seguente base dati:
+    \begin{equation}\begin{aligned}
+        IMPIEGATO (\underline{Nome, Cognome}, Dipartimento, Ufficio, Stipendio, Citta)\\
+        DIPARTIMENTO (\underline{Nome}, Indirizzo, Citta)
+    \end{aligned}\end{equation}
+Estrarre i nomi propri degli impiegati di cognome "Rossi" che lavorano al dipartimento $Produzione$ o $Amministrazione$.
+    \begin{lstlisting}{Esempio 8}
+        select 
+            I.Nome
+        from 
+            Impiegato as I
+        where 
+            (I.Dipartimento = 'Produzione'
+            or I.Dipartimento = 'Amministrazione)
+            and I.Cognome = 'Rossi'
+    \end{lstlisting}
+    
+\subsubsection{Esempio 9}
+Consideriamo la seguente base dati:
+    \begin{equation}\begin{aligned}
+        IMPIEGATO (\underline{Nome, Cognome}, Dipartimento, Ufficio, Stipendio, Citta)\\
+        DIPARTIMENTO (\underline{Nome}, Indirizzo, Citta)
+    \end{aligned}\end{equation}
+Estrarre gli impiegati che hanno un cognome che ha una $o$ in seconda posizione e finisce per $i$.
+    \begin{lstlisting}{Esempio 9}
+        select 
+            I.Nome, I.Cognome
+        from 
+            Impiegato as I
+        where 
+            I.Cognome like '_o%i'
+    \end{lstlisting}
+
+
+
+\section{Gestione dei valori nulli}
+Un valore nullo in un attributo può significare che tale attributo non è applicabile, o che il valore è applicabile ma non è conosciuto o anche che non si sa in quale delle due situazioni ci troviamo.\\
+Per selezionare i termini con valori nulli, SQL fornisce il predicato \texttt{is null}, la cui sintassi è semplicemente
+    $$\texttt{Attributo is [not] null}$$
+Il predicato risulta vero solo se l'attributo ha valore nullo, mentre il predicato \texttt{is not null} è la sua negazione.\\\\
+I valori nulli hanno un particolare impatto sulla valutazione dei normali predicati.\\
+Consideriamo un semplice predicato di confronto fra un attributo della tabella $T$ e un valore costante:
+    $$\texttt{A > c}$$
+Questo predicato sarà vero per le righe in cui l'attributo $A$ è superiore a $c$.\\
+Osserviamo che ci sono due soluzioni per gestire il caso in cui $A$ sia nullo: la prima soluzione, più immediata, usa la \textbf{logica a due valori} e prevede semplicemente di considerare falso il predicato.\\
+La seconda soluzione, quella adottata in SQL a partire da SQL-2, fa uso di una \textbf{logica a tre valori}, in cui un predicato semplice restituisce il valore $unknown$ quando uno qualsiasi dei suoi termini ha valore nullo. Fa eccezione, ovviamente, il predicato \texttt{is null}, che restituisce sempre o vero o falso.\\
+La differenza tra le soluzioni basate sulle logiche a due e tre valori emerge solo quando si valutano espressioni complicate. In alcuni casi il comportamento del sistema in presenza di valori nulli può diventare molto poco intuitivo, richiedendo una maggiore attenzione.
+
+
+
+\section{Duplicati}
+Una significativa differenza tra SQL e algebra relazionale è data dalla gestione dei duplicati. Mentre in algebra una tabella viene vista come una relazione dal punto di vista matematico, e quindi come un insieme di elementi (tuple) diversi tra loro, in SQL si possono avere in una tabella più righe uguali (dette duplicati), ovvero righe con gli stessi valori su tutti gli attributi.\\\\
+Per emulare il comportamento dell'algebra relazionale, sarebbe necessario efettuare l'eliminazione dei duplicati tutte le volte che si eseguono operazioni di proiezione. L'operazione di eliminazione di duplicati, però, è molto costosa, e spesso non è necessaria, in quanto in molti casi il risultato non contiene duplicati.\\
+Per esempio, quando il risultato include una chiave per ogni tabella che compare nella \texttt{from}, la tabella risultato non può contenere più esemplari della stessa riga. Per questo in SQL si è stabilito di permettere la presenza di duplicati all'interno delle tabelle, lasciando al programmatore il compito di specificare esplicitamente quando l'operazione di rimozione di duplicati è necessaria.\\\\
+L'eliminazione dei duplicati è specificata con la parola chiave \texttt{distinct}, da porre immediatamente dopo la parola chiave \texttt{select}.\\
+La sintassi prevede che si possa anche specificare la parola chiave \texttt{all} al posto di \texttt{distinct}, indicando che si intendono mantenere tutti i duplicati. L'indicazione della parola \texttt{all} è opazionale, in quanto, come già detto, il mantenimento dei duplicati costituisce l'opzione di default.
+
+\subsubsection{Esempio 10}
+Consideriamo la seguente base dati:
+    \begin{equation}\begin{aligned}
+        IMPIEGATO (\underline{Nome, Cognome}, Dipartimento, Ufficio, Stipendio, Citta)\\
+        DIPARTIMENTO (\underline{Nome}, Indirizzo, Citta)
+    \end{aligned}\end{equation}
+Estrarre gli impiegati di cognome "Rossi" che abitano nella stessa città, presentando eventualmente più volte lo stesso valore di \texttt{Citta}.
+    \begin{lstlisting}{Esempio 10}
+        select 
+            I.Citta
+        from 
+            Impiegato as I
+        where 
+            I.Cognome = 'Rossi'
+    \end{lstlisting}
+    
+\subsubsection{Esempio 11}
+Consideriamo la seguente base dati:
+    \begin{equation}\begin{aligned}
+        IMPIEGATO (\underline{Nome, Cognome}, Dipartimento, Ufficio, Stipendio, Citta)\\
+        DIPARTIMENTO (\underline{Nome}, Indirizzo, Citta)
+    \end{aligned}\end{equation}
+Estrarre gli impiegati di cognome "Rossi" che abitano nella stessa città, facendo comparire al più una volta ogni città.
+    \begin{lstlisting}{Esempio 11}
+        select distinct
+            I.Citta
+        from 
+            Impiegato as I
+        where 
+            I.Cognome = 'Rossi'
+    \end{lstlisting}
+
+
+
+\section{Uso di variabili}
+Abbiamo già visto come nelle interrogazioni SQL sia possibile associare un nome alternativo, detto $alias$, alle tabelle che compaiono come argomento della clausola \texttt{from}.\\
+Il nome viene usato per far riferimento alla tabella nel contesto dell'interrogazione. Questa funzionalità può essere sfruttata per far riferimento a una tabella in modo compatto, ricorrendo a brevi alias ed evitando così di scrivere per esteso il nome della tabella tutte le volte che ne viene richiesto l'uso. Vi sono, però, altre ragioni per utilizzare gli alias.\\\\
+Per prima cosa, utilizzando gli alias è possibile fare accesso più volte alla stessa tabella, come avviene nel calcolo relazionale quando si usano più variabili associate alla stessa tabella e in modo simile all'uso dell'operatore di ridenominazione $\rho$ dell'algebra relazionale.\\
+Tutte le volte che si introduce un alias per una tabella si dichiara in effetti una variabile che rappresenta le righe della tabella di cui è alias. Quando una tabella compare una sola volta in un'interrogazione, non c'è differenza tra l'interpretare l'alias come uno pseudonimo o come una nuova variabile. Quando una tabella compare invece più volte, è necessario considerare l'alias come una nuova variabile.
+
+\subsubsection{Esempio 12}
+Consideriamo la seguente base dati:
+    \begin{equation}\begin{aligned}
+        IMPIEGATO (\underline{Nome, Cognome}, Dipartimento, Ufficio, Stipendio, Citta)\\
+        DIPARTIMENTO (\underline{Nome}, Indirizzo, Citta)
+    \end{aligned}\end{equation}
+Estrarre tutti gli impiegati che hanno lo stesso cognome (ma diverso nome) di impiegati dipartimento $Produzione$.
+    \begin{lstlisting}{Esempio 12}
+        select distinct
+            I1.Nome,
+            I1.Cognome
+        from 
+            Impiegato as I1
+            Impiegato as I2
+        where 
+            I1.Cognome = I2.Cognome
+            and I1.Nome <> I2.Nome
+            and I2.Dipartimento = 'Produzione'
+    \end{lstlisting}
+Questa interrogazione confronta ciascuna riga di $IMPIEGATO$ con tutte le righe di $IMPIEGATO$ associate al dipartimento $Produzione$. \\
+Si osservi che in questa interrogazione ogni riga con $Produzione$ come valore dell'attributo $Dipartimento$ viene confrontata anche con se stessa, ma il confronto della riga con se stessa non sarà mai soddisfatto, in quanto il predicato di disuguaglianza sull'attributo $Nome$ non potrà mai essere vero.\\
+Per illustrare l'esecuzione di quest'interrogazione si può immaginare che al momento della definizione degli alias, vengano create due diverse tabelle associate alle variabili $I1$ e $I2$, ciascuna con tutte le righe di $IMPIEGATO$; ciascuna variabile assumerà quindi ciascun valore di tupla in modo indipendente dell'altra variabile.
+
+
+
+
+\section{Ordinamento}
+Mentre una relazione è costituita da un insieme non ordinato di tuple, nell'uso reale delle basi di dati sorge spesso il bisogno di costruire un ordine sulle righe delle tabelle.\\
+SQL permette di specificare un ordinamento delle righe del risultato di un'interrogazione tramite la clausola \texttt{order by}, con la quale si chiude l'interrogazione. La clausola rispetta la seguente sintassi:
+    $$\texttt{order by AttributoDiOrdinamento1 [asc|desc] {, AttributodiOrdinamento2 [asc|desc]}}$$
+In questo modo si specificano gli attributi che devono essere utilizzati per l'ordinamento: per prima cosa le righe vengono ordinate in base al primo attributo nell'elenco; per righe che hanno lo stesso valore sul primo attributo, si considerano i valori degli attributi successivi, in sequenza.\\
+L'ordine su ciascun attributo può essere ascendente o discendente, a seconda che si sia usato il quantificatore \texttt{asc} o \texttt{desc}. Se il quantificatore è omesso, so assume un ordinamento ascendente.
+
+\subsubsection{Esempio 13}
+Consideriamo la seguente base dati:
+    \begin{equation}\begin{aligned}
+        IMPIEGATO (\underline{Nome, Cognome}, Dipartimento, Ufficio, Stipendio, Citta)\\
+        DIPARTIMENTO (\underline{Nome}, Indirizzo, Citta)
+    \end{aligned}\end{equation}
+Estrarre i nomi propri di tutti gli impiegati del dipartimento $Produzione$ ordinati in ordine decrescente.
+    \begin{lstlisting}{Esempio 13}
+        select distinct
+            I.Nome
+        from 
+            Impiegato as I
+        where 
+            I.Dipartimento = 'Produzione'
+        orderby I.Nome desc
+    \end{lstlisting}

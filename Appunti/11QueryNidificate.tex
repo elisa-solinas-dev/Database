@@ -1,0 +1,212 @@
+\chapter{Query Nidificate}
+Finora abbiamo analizzato interrogazioni in cui l'argomento della clausola \texttt{where} si basa su condizioni composte da predicati semplici mediante gli operatori logici, in cui ciascun predicato rappresenta un semplice confronto tra due valori.\\
+SQL ammette anche l'uso di predicati con una struttura più complessa, in cui si confronta un valore (ottenuto come risultato di un'espressione valutata sulla singola riga) con il risultato dell'esecuzione di un'interrogazione SQL. L'interrogazione che viene usata per il confronto viene definita direttamente nella clausola \texttt{where}.\\
+Si parla in questo caso di \textbf{interrogazioni nidificate}.\\\\
+Nel caso più tipico, l'espressione che compare come primo membro del confronto è il semplice nome di un attributo. Se in un predicato si confronta un attributo con il risultato di un'interrogazione, sorge il problema di \textbf{disomogeneità dei termini del confronto}.\\
+Infatti, da una parte abbiamo il risultato dell'esecuzione di un'interrogazione SQL (in generale un insieme di valori), mentre dall'altra abbiamo il valore dell'attributo per la particolare riga.\\\\
+La soluzione offerta da SQL consiste nell'estendere, con le parole chiave \texttt{all} o \texttt{any}, i normali operatori di confronto.\\
+La parola chiave \texttt{any} specifica che la riga soddisfa la condizione se risulta vero il confronto (con l'operatore specificato) tra il valore dell'attributo per la riga e almeno uno degli elementi restituiti dall'interrogazione.\\
+La parola chiave \texttt{all} specifica che la riga soddisfa la condizione solo se tutti gli elementi restituiti dall'interrogazione nidificata rendono vero il confronto.\\
+La sintassi richiede la compatibilità di dominio tra l'attributo restituito dall'interrogazione nidificata e l'attributo con cui avviene il confronto.
+
+\subsubsection{Esempio 1}
+Consideriamo la seguente base dati:
+	\begin{equation}\begin{aligned}
+		IMPIEGATO (\underline{Nome, Cognome}, Dipartimento, Ufficio, Stipendio, Citta)\\
+		DIPARTIMENTO (\underline{Nome}, Indirizzo, Citta)
+	\end{aligned}\end{equation}
+Estrarre gli impiegati che lavorano in dipartimenti situati a Firenze.
+	\begin{lstlisting}{Esempio 1}
+		select
+			*
+		from
+			Impiegato
+		where
+			Dipartimento = any (
+							select Nome
+							from Dipartimento
+							where Citta = 'Firenze')
+	\end{lstlisting}
+
+\subsubsection{Esempio 2}
+Consideriamo la seguente base dati:
+	\begin{equation}\begin{aligned}
+		IMPIEGATO (\underline{Nome, Cognome}, Dipartimento, Ufficio, Stipendio, Citta)\\
+		DIPARTIMENTO (\underline{Nome}, Indirizzo, Citta)
+	\end{aligned}\end{equation}
+Estrarre gli impiegati che hanno lo stesso nome di un impiegato del dipartimento $Produzione$.
+\begin{lstlisting}{Esempio 2 - Formulazione a}
+	select
+		I1.Nome
+	from
+		Impiegato I1, 
+		Impiegato I2
+	where
+		I1.Nome = I2.Nome
+		and I2.Dipartimento = 'Produzione'
+\end{lstlisting}
+\begin{lstlisting}{Esempio 2 - Formulazione b}
+	select 
+		Nome
+	from 
+		Impiegato
+	where 
+		Nome = any (
+				select Nome
+				from Impiegato
+				where Dipartimento = 'Produzione')
+\end{lstlisting}
+
+\subsubsection{Esempio 3}
+Consideriamo la seguente base dati:
+	\begin{equation}\begin{aligned}
+		IMPIEGATO (\underline{Nome, Cognome}, Dipartimento, Ufficio, Stipendio, Citta)\\
+		DIPARTIMENTO (\underline{Nome}, Indirizzo, Citta)
+	\end{aligned}\end{equation}
+Estrarre i dipartimenti in cui non lavorano persone di cognome 'Rossi'
+	\begin{lstlisting}{Esempio 3}
+		select 
+			Nome
+		from
+			Dipartimento
+		where
+			Nome <> all(
+					select Dipartimento
+					from Impiegato
+					where Cognome = 'Rossi')
+	\end{lstlisting}
+
+\subsubsection{Esempio 4}
+Consideriamo la seguente base dati:
+	\begin{equation}\begin{aligned}
+		IMPIEGATO (\underline{Nome, Cognome}, Dipartimento, Ufficio, Stipendio, Citta)\\
+		DIPARTIMENTO (\underline{Nome}, Indirizzo, Citta)
+	\end{aligned}\end{equation}
+Estrarre il dipartimento dell'impiegato che guadagna lo stipendio massimo (usando l'operatore aggregato \texttt{max})
+	\begin{lstlisting}{Esempio 4 - Formulazione a}
+		select
+			Dipartimento
+		from	
+			Impiegato
+		where
+			Stipendio = any(
+							select max(Stipendio)
+				 			from Impiegato)
+	\end{lstlisting}
+Estrarre il dipartimento dell'impiegato che guadagna lo stipendio massimo (usando solo un'interrogazione nidificata).
+	\begin{lstlisting}{Esempio 4 - Formulazione b}
+	select
+		Dipartimento
+	from	
+		Impiegato
+	where
+		Stipendio >= all(
+						select Stipendio
+						from Impiegato)
+	\end{lstlisting}
+
+
+
+\section{Interrogazioni nidificate complesse}
+Un'interpretazione molto semplice e intuitiva delle interrogazioni nidificate consiste nell'assumere che l'interrogazione nidificata venga eseguita prima di analizzare le righe dell'interrogazione esterna.\\
+Il risultato dell'interrogazione può essere salvato in una tabella temporanea e il controllo sulle righe dell'interrogazione esterna può essere fatto accedendo direttamente al risultato temporaneo. Questa interrogazione corrisponde, tra l'altro, a un meccanismo di esecuzione efficiente, in cui l'interrogazione nidificata viene eseguita una sola volta.\\\\
+Talvolta l'interrogazione nidificata fa riferimento al contesto dell'interrogazione che la racchiude; tipicamente ciò accade tramite una variabile definita nell'ambito della query più esterna e usata nell'ambito della query più interna (si parla di un \textbf{passaggio di binding} da un contesto all'altro).\\
+La presenza del meccanismo di passaggio di binding arricchisce il potere espressivo di SQL. In questo caso l'interpretazione semplice data precedentemente alle query nidificate non vale più; bisogna, a questo punto, ricostruire l'interpretazione standard delle interrogazioni SQL, per cui prima si costruisce il prodotto cartesiano delle tabelle e successivamente si applicano a ciascuna riga del prodotto le condizioni che compaiono nella clausola \texttt{where}.\\
+L'interrogazione nidificata è un componente della clausola \texttt{where} e dovrà anch'essa essere valutata separatamente per ogni riga prodotta nella valutazione della query esterna.\\\\
+Così, la nuova interpretazione è la seguente: per ogni riga della query esterna, valutiamo per prima cosa la query nidificata, quindi calcoliamo il predicato a livello di riga sulla query esterna. Tale processo può essere ripetuto un numero arbitrario di volte, pari al numero di nidificazioni che possono essere utilizzate nella query; con query così complicate si perdono però le caratteristiche di leggibilità di SQL.\\\\
+Per quanto riguarda la visibilità (o \textbf{scope}) delle variabili SQL, vale la restrizione che una variabile è utilizzabile solo all'interno della query in cui è definita o nell'ambito di una query nidificata (a qualsiasi livello) all'interno di essa.\\
+Se un'interrogazione possiede interrogazioni nidificate allo stesso livello (su predicati distinti), le variabili introdotte nella clausola \texttt{from} di una query non potranno essere usate nell'ambito di un'altra query.\\\\
+Introduciamo ora l'operatore logico \texttt{exists}, che ammette come parametro un'interrogazione nidificata e restituisce il valore vero solo se l'interrogazione fornisce un risultato non vuoto.\\
+Questo operatore può essere utilizzato in modo significativo solo quando si ha un passaggio di binding tra l'interrogazione esterna e quella nidificata.
+
+\subsubsection{Esempio 5}
+Consideriamo la seguente base dati:
+	\begin{equation}\begin{aligned}
+		PERSONA (\underline{CodFiscale}, Nome, Cognome, Citta)
+	\end{aligned}\end{equation}
+Estrarre le persone che hanno degli omonimi (ovvero persone con lo stesso nome e cognome, ma diverso codice fiscale) usando le query nidificate.
+	\begin{lstlisting}{Esempio 5 - Formulazione a}
+		select *
+		from Persona P\
+		where exists (
+				select *
+				from Persona P2
+				where 
+					P1.Nome = P2.Nome
+					and P1.Cognome = P2.Cognome
+					and P1.CodFiscale <> P2.CodFiscale)
+	\end{lstlisting}
+Estrarre le persone che hanno degli omonimi (ovvero persone con lo stesso nome e cognome, ma diverso codice fiscale) senza usare le query nidificate.
+	\begin{lstlisting}{Esempio 5 - Formulazione b}
+		select P.*
+		from
+			Persona P1,
+			Persona P2
+		where
+			P1.Nome = P2.Nome
+			and P1.Cognome = P2.Cognome
+			and P1.CodFiscale <> P2.CodFiscale
+	\end{lstlisting}
+
+\subsubsection{Esempio 6}
+Consideriamo la seguente base dati:
+	\begin{equation}\begin{aligned}
+		CANTANTE (\underline{Nome, Canzone})\\
+		AUTORE (\underline{Nome, Canzone})
+	\end{aligned}\end{equation}
+Estrarre i cantautori puri, ovvero i cantanti che hanno eseguito solo canzoni di cui erano anche autori.
+	\begin{lstlisting}{Esempio 6 - Formulazione a}
+		select Nome
+		from Cantante
+		where Nome not in(
+			select Nome
+			from Cantante C
+			where Nome not in (
+				select nome
+				from Autore
+				where Autore.Canzone = C.Canzone))
+	\end{lstlisting}
+	\begin{lstlisting}{Esempio 6 - Formulazione b}
+		select Nome
+		from Cantante
+		
+		except
+		
+		select Nome
+		from Cantante C
+		where Nome not in(
+			select Nome
+			from Autore
+			where Autore.Canzone = C.Canzone)
+	\end{lstlisting}
+
+
+\subsubsection{Esempio 5}
+Consideriamo la seguente base dati:
+\begin{equation}\begin{aligned}
+PERSONA (\underline{CodFiscale}, Nome, Cognome, Citta)
+\end{aligned}\end{equation}
+Estrarre le persone che hanno degli omonimi (ovvero persone con lo stesso nome e cognome, ma diverso codice fiscale) usando le query nidificate.
+\begin{lstlisting}{Esempio 5 - Formulazione a}
+select *
+from Persona P\
+where exists (
+select *
+from Persona P2
+where 
+P1.Nome = P2.Nome
+and P1.Cognome = P2.Cognome
+and P1.CodFiscale <> P2.CodFiscale)
+\end{lstlisting}
+Estrarre le persone che hanno degli omonimi (ovvero persone con lo stesso nome e cognome, ma diverso codice fiscale) senza usare le query nidificate.
+\begin{lstlisting}{Esempio 5 - Formulazione b}
+select P.*
+from
+Persona P1,
+Persona P2
+where
+P1.Nome = P2.Nome
+and P1.Cognome = P2.Cognome
+and P1.CodFiscale <> P2.CodFiscale
+\end{lstlisting}
+

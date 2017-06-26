@@ -1,0 +1,335 @@
+\chapter{Introduzione}
+
+Il linguaggio SQL è il linguaggio di riferimento per tutti i DBMS relazionali, e implementa sia il DDL (Data Definition Language) che il DML (Data Manipulation Language).\\\\
+SQL è un linguaggio che ci permette di interrogare e gestire le basi di dati.\\
+Ciascuna interrogazione è implementata per mezzo di costrutti di programmazione detti \textbf{query}.\\\\
+Per il linguaggio SQL sono stati realizzati diversi standard e diverse implementazioni.
+
+\section{PostgreSQL}
+PostgreSQL è un DBMS opensource, conforme agli standard SQL, che aggiunge ai database relazionali caratteristiche che lo rendono classificabile come object-relational.\\
+Aggiunge inoltre funzionalità quali vincoli, trigger e rules.\\\\
+PostgreSQL è basato su un'architettura Client/Server, ovvero la connessione è frutto di due processi:
+    \begin{itemize}
+        \item{Il processo \textbf{server}, chiamato postgres o postmaster, che accetta le connessioni dai client e ha il compito di interagire con i database su delega del client che ha fatto richiesta. Spesso gira su un altro computer, più potente, e accetta richieste contemporaneamente da più client.}
+        \item{Un \textbf{client} che richiede di effettuare determinate operazioni su uno o più database. Un client può essere: un’applicazione grafica, una pagina web, un programma scritto da un utente. pgAdmin, l'utility che permette di impartire comandi SQL interattivamente, è un esempio di client.}
+    \end{itemize}
+
+\section{Domini dei dati}
+\subsection{Caratteri e stringhe}
+Le \textbf{stringhe a lunghezza fissa} vengono dichiarate con la seguente sintassi:
+    \begin{lstlisting}{Stringhe}
+        char(length)
+    \end{lstlisting}
+Le \textbf{stringhe a lunghezza variabile} vengono dichiarate con la seguente sintassi:
+    \begin{lstlisting}{Stringhe}
+        varchar(length)
+    \end{lstlisting}
+Quando la lunghezza di una stringa non viene specificata, si assume che sia 1 (\textbf{singolo carattere}).\\\\
+\textbf{Esempi}:
+    \begin{itemize}
+        \item{$char(100)$: stringa di esattamente 100 caratteri}
+        \item{$varchar(100)$: stringa di lunghezza variabile fino a un massimo di 100 caratteri}
+        \item{$char$: un singolo carattere}
+    \end{itemize}
+    
+\subsection{Tipi numerici esatti}
+I numeri decimali vengono rappresentati in maniera esatta con una delle seguenti sintassi:
+    \begin{lstlisting}{Numeri decimali}
+        decimal (precisione, scala)
+        numeric (precisione, scala)
+   \end{lstlisting}
+    \begin{itemize}
+        \item{$precisione$: numero totale di cifre decimali (opzionale). Per $decimal$ la precisione specificata è quella minima garantita, per $numeric$ è quella esatta.}
+        \item{$scala$: numero di cifre decimali dopo la virgola (opzionale).}
+    \end{itemize}
+I numeri interi vengono rappresentati con una delle seguenti sintassi:
+    \begin{lstlisting}{Numeri interi}
+        integer
+        smallint
+    \end{lstlisting}
+La rappresentazione dei numeri interi è dipendente dalla specifica implementazione.\\\\
+\textbf{Esempi}:
+    \begin{itemize}
+        \item{$decimal(6,4)$: decimali da -99.9999 a +99.999}
+        \item{$numeric(4)$: decimali da -9999 a +9999}
+        \item{$integer$: interi a 32 bit (solitamente)}
+    \end{itemize}
+
+\subsection{Tipi numerici approssimati}
+I numeri in virgola mobile con mantissa ed esponente vengono rappresentati con la seguente sintassi:
+    \begin{lstlisting}{Numeri approssimati}
+        float (precisione)
+        real
+        double precision
+    \end{lstlisting}
+    \begin{itemize}
+        \item{$precisione$: numero di cifre binarie per la mantissa}
+    \end{itemize}
+
+\subsection{Date}
+Possiamo usare la seguente sintassi per rappresentare istanti temporali:
+    \begin{itemize}
+        \item{$date$: per le date. Comprende i sottocampi $year$, $month$, $day$.}
+        \item{$time(precisione)$: per gli orari. Comprende i sottocampi $hour$, $minute$, $second$.}
+        \item{$timestamp(precisione)$: per specificare sia date che orari. Comprende i sottocampi $year$, $month$, $day$, $hour$, $minute$, $second$.}
+    \end{itemize}
+    \begin{itemize}
+        \item{$precisione$: numero di cifre per le frazioni di secondo (opzionale)}
+    \end{itemize}
+\textbf{Esempi}:
+    \begin{itemize}
+        \item{$timestamp(2)$: per memorizzare eventi di log con precisione al centesimo di secondo.}
+    \end{itemize}
+    
+\subsection{Intervalli}
+Per rappresentare gli intervalli temporali, usiamo la sintassi:
+    \begin{lstlisting}{Intervalli Temporali}
+        interval unita1 [to unita2]
+    \end{lstlisting}
+    \begin{itemize}
+        \item{$unita1$: unità di tempo più grossolana}
+        \item{$unita2$ (opzionale): unità di tempo più fine}
+    \end{itemize}
+\textbf{Esempi}:
+    \begin{itemize}
+        \item{$interval$ $year$: esprime intervalli in anni.}
+        \item{$interval$ $year$ $to$ $month$: esprime intervalli misurati in anni e mesi (e.g. un anno e due mesi).}
+        \item{$interval$ $day$ $to$ $second(2)$: esprime intervalli misurati in giorni, ore, minuti, secondi e centesimi di secondo.}
+        \item{$interval$ $year$ $to$ $minute$: non è permesso (non si può passare in modo preciso da $month$ a $day$ perché i mesi hanno durata diversa.}
+    \end{itemize}
+
+\subsection{Altri domini}
+    \begin{itemize}
+        \item{$boolean$: valori booleani.}
+        \item{$bigint$: interi "grossi"}
+        \item{$blob$: Binary Large OBject (immagini, video, file di vario tipo) (in PostgreSQL $bytea$ oppure $lo$).}
+        \item{$clob$: Character Large OBject (lunghi file di testo) (in PostgreSQL $text$).}
+    \end{itemize}
+
+\subsection{Domini personalizzati}
+È possibile creare domini personalizzati (le parti tra $[]$ sono opzionali:
+    \begin{lstlisting}{Domini personalizzati}
+        create domain NomeDominio as TipoDato
+        [default ValoreDefault] [Vincoli]
+    \end{lstlisting}
+    \begin{itemize}
+        \item{$NomeDominio$: nome del nuovo dominio}
+        \item{$TipoDato$: nome del tipo di base}
+        \item{$default \quad ValoreDefault$: valore asseegnato in automatico, se non specificato esplicitamente (opzionale)}
+        \item{$Vincoli$: insieme di vincoli sui valori assunti dal dominio personalizzato (opzionale)}
+    \end{itemize}
+I domini personalizzati sono comunque semplici (no array, no struct, no record).\\\\
+\textbf{Esempio 1}: voto di un esame
+    \begin{lstlisting}{Domini personalizzati - Esempio 1}
+        create domain Voto
+        as smallint default NULL
+        check (value >= 18) AND (value <= 30);
+    \end{lstlisting}
+\textbf{Esempio 2}: temperatura corporea (gradi Celsius)
+    \begin{lstlisting}{Domini personalizzati - Esempio 2}
+        create domain Temperatura
+        as decimal(3, 1) default NULL
+        check (value >= 35) AND (value <= 42);
+    \end{lstlisting}
+L'utilità dei nuovi domini è legata alla possibilità di astrazione.\\\\
+\textbf{Esempio 3}: per passare dai gradi Celsius ai gradi Fahrenheit è sufficiente cambiare una volta per tutte il dominio di Temperatura:
+    \begin{lstlisting}{ Domini personalizzati - Esempio 3}
+        create domain Temperatura
+        as decimal(4, 1) default NULL
+        check (value >= 95) AND (value <= 107.6);
+    \end{lstlisting}
+
+\section{Definizione di tabelle}
+Per creare e definire una nuova tabella utilizziamo la seguente sintassi:
+    \begin{lstlisting}{Creare nuova tabella}
+        create table NomeTabella(
+            NomeAttributo1 Dominio1 [ValoreDefault1][Vincoli1]
+            ...
+            Nome AttributoN DominioN [ValoreDefaultN][VincoliN]
+        );
+    \end{lstlisting}
+\textbf{Esempio}: $Dipartimento(\underline{Nome}, Indirizzo, Citta)$
+    \begin{lstlisting}{Esempio Dipartimento}
+        create table Dipartimento(
+            Nome varchar(20) primary key,
+            Indirizzo varchar(50),
+            Citta varchar(20) not null
+        );
+    \end{lstlisting}
+    
+\subsection{Valori di default}
+Per ogni attributo può essere specificato un valore predefinito che verrà usato se, nell'inserimento di una riga, non viene specificato un valore per quell'attributo.\\\\
+\textbf{Esempio}: 
+    \begin{lstlisting}{Esempio Valori Default}
+        NumeroFigli smallint default 0,
+        Email varchar(64) default 'unito.it',
+        StatoCivile varchar(20) default 'libero'
+    \end{lstlisting}
+Se non si specifica esplicitamente un valore di default, viene usato $null$.
+
+\section{Definizione dei vincoli}
+I vincoli servono a definire proprietà che devono essere verificate da ogni istanza della base di dati per garantirne l'integrità (vincoli di integrità).\\
+Si differenziano in:
+    \begin{itemize}
+        \item{\textbf{Vincoli intrarelazionali}: relativi a una sola tabella}
+        \item{\textbf{Vincoli interrelazionali}: relativi a più tabelle}
+    \end{itemize}
+Si possono specificare:
+    \begin{itemize}
+        \item{Contestualmente alla definizione degli attributi}
+        \item{Alla fine della definizione della tabella}
+    \end{itemize}
+Si possono usare vincoli predefiniti oppure si può specificare l'espressione logica che il vincolo deve verificare.\\\\
+In alcune occasioni può essere utile assegnare un nome a un vincolo. Per farlo si utilizza la seguente sintassi dopo tutte le definizioni di attributi:
+    \begin{lstlisting}
+        constraint NomeVincolo DefinizioneVincolo
+    \end{lstlisting}
+
+\subsection{Vincoli intrarelazionali predefiniti}
+\textbf{Vincolo $not$ $null$:}
+    \begin{itemize}
+        \item{È un vincolo di tupla che indica che il valore nullo non è ammesso come valore per un determinato attributo, quindi rende l'attributo obbligatorio}
+        \item{Se l'attributo non viene specificato in fase di inserimento e non si è specificato un valore di default, si viola il vincolo d'integrità e l'operazione è annullata}
+        \item{Sintassi
+            \begin{lstlisting}
+                NomeAttributo Dominio {}not null
+            \end{lstlisting}}
+        \item{Se per l'attributo viene specificato un valore di default è possibile effettuare l'inserimento anche senza specificarne il valore.}
+    \end{itemize}
+\textbf{Esempio}
+    \begin{lstlisting}
+        Citta varchar(20) not null
+    \end{lstlisting}
+    
+\textbf{Vincolo $unique$:}
+    \begin{itemize}
+        \item{È un vincolo di tabella che indica che il valore di un attributo o le combinazioni di valori su un insieme di attributi sono una superchiave:
+            $$righe \text{ } diverse \leftrightarrow 
+            valori \text{ } diversi$$}
+        \item{Fa eccezione il valore nullo (che può comparire in più righe senza violare il vincolo).}
+        \item{Sintassi (vincolo su un solo attributo):
+            \begin{lstlisting}
+                NomeAttributo Dominio unique
+            \end{lstlisting}}
+    \end{itemize}
+\textbf{Esempio}
+    \begin{lstlisting}
+        Matricola varchar(6) unique
+    \end{lstlisting}
+    
+\textbf{Vincolo $unique$ su insiemi di attributi}:
+    \begin{itemize}
+        \item{Va specificato dopo la definizione degli attributi della tabella.}
+        \item{Sintassi:
+            \begin{lstlisting}
+                NomeAttributo1 Dominio1
+                NomeAttributo2 Dominio2
+                ...
+                unique (NomeAttributo1, NomeAttributo2)
+            \end{lstlisting}}
+    \end{itemize}
+\textbf{Esempio}
+    \begin{lstlisting}
+        Nome varchar(255),
+        Cognome varchar(255),
+        unique(Nome, Cognome)
+    \end{lstlisting}
+    
+\textbf{Vincolo $primary$ $key$ di chiave primaria}:
+    \begin{itemize}
+        \item{È un vincolo di tabella che indica che un attributo o un insieme di attributi sono la chiave primaria.}
+        \item{Gli attributi così definiti non possono assumere valore nullo.}
+        \item{Può esserci un solo vincolo primary key per ogni tabella.}
+        \item{Vincolo $primary$ $key$ su un solo attributo: va specificato nella definizione dell'attributo mediante la seguente sintassi:
+            \begin{lstlisting}
+                NomeAttributo Dominio primary key
+            \end{lstlisting}}
+        \item{Vincolo $primary$ $key$ su un insieme di attributi: va specificato dopo la definizione degli attributi mediante la seguente sintassi:
+            \begin{lstlisting}
+                NomeAttributo1 Dominio1,
+                NomeAttributo2 Dominio2,
+                ...
+                primary key (NomeAttributo1, NomeAttributo2, ...)
+            \end{lstlisting}}
+    \end{itemize}
+
+\subsubsection{Vincoli interrelazionali predefiniti}
+Un \textbf{vincolo di integrità referenziale} (di \textbf{chiave esterna}):
+    \begin{itemize}
+        \item{Crea un vincolo tra i valori uno o più attributi della tabella (interna) su cui è definito e uno o più attributi di un'altra tabella (esterna).}
+        \item{Per ogni riga della tabella interna, il valore dell'attributo specificato nel vincolo, se diverso da $null$, dev'essere presente tra i valori del corrispondente attributo della tabella esterna.}
+        \item{Sintassi con un solo attributo:
+            \begin{lstlisting}
+                NomeAttributo references NomeTabellaEsterna(NomeAttributoEsterno)
+            \end{lstlisting}}
+        \item{Sintassi con più attributo:
+            \begin{lstlisting}
+                NomeAttributo1 Dominio1,
+                NomeAttributo2 Dominio2,
+                ...
+                foreign key (NomeAttributo1, NomeAttributo2, ...)
+                    references NomeTabellaEsterna (NomeAttributoEsterno1, Nome AttributoEsterno2, ...)
+            \end{lstlisting}
+            L'ordine è importante! Ciascun attributo viene mappato al corrisponente secondo l'ordine con cui lo specifichiamo.}
+    \end{itemize}
+
+\subsubsection{Violazione del vincolo di integrità referenziale}
+In generale, quando un vincolo viene violato, il DBMS rifiuta l'operazione che causerebbe la violazione e segnala un errore.\\
+Con i vincoli di integrità referenziale si possono specificare altre reazioni da adottare in caso di violazione.\\\\
+Casi in cui può avvenire una violazione di un vincolo di integrità referenziale:
+    \begin{enumerate}
+        \item{Inserimento di una nuova riga nella tabella interna.}
+        \item{Modifica, nella tabella interna, di un valore dell'attributo referente.}
+        \item{Modifica, nella tabella esterna, di un valore dell'attributo riferito.}
+        \item{Cancellazione di una riga nella tabella esterna.}
+    \end{enumerate}
+I primi due casi riguardano un cambiamento della \textbf{tabella interna}, gli ultimi due un cambiamento della \textbf{tabella esterna}.\\\\
+Quando cambia la tabella interna (casi 1 e 2), l'operazione viene semplicemente \textbf{rifiutata}.\\
+Quando cambia la tabella esterna (casi 3 e 4), si può specificare quali variazioni apportare alla tabella interna.\\
+Questa asimmetria nel comportamento deriva dal fatto che dal punto di vista applicativo la tabella esterna ricopre il ruolo di tabella principale (\textbf{master}) e quella interna di secondaria (\textbf{slave}) che deve adeguarsi alle variazioni.\\\\
+In seguito a una \textbf{modifica} (caso 3), le reazioni possono essere le seguenti:
+    \begin{enumerate}
+        \item{\textbf{cascade}: il nuovo valore dell'attributo della tabella esterna viene riportato in tutte le corrispondenti righe della tabella interna.}
+        \item{\textbf{set null}: all'attributo referente viene assegnato il valore nullo al posto del valore modificato nella tabella esterna.}
+        \item{\textbf{set default}: all'attributo referente viene assegnato il valore di default al posto del valore modificato nella tabella esterna.}
+        \item{\textbf{no action}: nessuna reazione (e quindi la modifica non viene consentita).}
+    \end{enumerate}
+In seguito a una \textbf{cancellazione} (caso 4), le reazioni possono essere le seguenti:
+    \begin{enumerate}
+        \item{\textbf{cascade}: tutte le righe della tabella interna corrispondenti alla riga cancellata nella tabella esterna vengono cancellate.}
+        \item{\textbf{set null}: all'attributo referente viene assegnato il valore nullo al posto del valore cancellato nella tabella esterna.}
+        \item{\textbf{set default}: all'attributo referente viene assegnato il valore di default al posto del valore cancellato nella tabella esterna.}
+        \item{\textbf{no action}: nessuna reazione (e quindi la cancellazione non viene consentita).}
+    \end{enumerate}
+La sintassi per specificare il comportamento in caso di violazione di un vincolo interrelazionale è la seguente:
+    \begin{lstlisting}
+        //Per la modifica, subito dopo il vincolo
+        on update Reazione
+        //Per la cancellazione, subito dopo il vincolo
+        on delete Reazione
+    \end{lstlisting}
+
+\subsubsection{Esempio}
+    \begin{lstlisting}{Creazione tabella Ricoveri}
+        create table Ricoveri (
+            PAZ varchar(4),
+            Inizio date,
+            Fine date,
+            Reparto char,
+            primary key (PAZ, Inizio),
+            foreign key (PAZ) references Pazienti(COD)
+                on update cascade
+                on delete no action,
+            foreign key (Reparto) references Reparti (COD)
+                on update cascade
+                on delete set null
+        );
+    \end{lstlisting}
+
+\section{Modifiche alle definizioni}
+SQL permette di modificare la definizione di tabelle, domini, vincoli precedentemente introdotti:
+    \begin{lstlisting}{Modifica definizioni}
+        alter (modifica),
+        drop (cancellazione),
+        add (aggiunta)
+    \end{lstlisting}

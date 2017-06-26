@@ -1,0 +1,897 @@
+\chapter{Algebra relazionale}
+
+Il modello relazionale descrive il modello del \textbf{DDL} (Data Definition Language), mentre l'algebra relazionale si occupa del \textbf{DML} (Data Manipulation Language), che manipola le tuple presenti nella base dati.\\\\
+Il cuore del DML è il linguaggio di interrogazione.\\
+Secondo il modello dell'interrogazione di Codd, ciascuna interrogazione ha come input la base dati e come output una relazione.\\\\
+\textbf{ES:} elencare i pazienti ricoverati nel reparto il cui primario è il Dott. Neri; visualizzare cognome, nome e nome del reparto.\\\\
+Codd formalizza l'interrogazione utilizzando il paradigma algebrico, cioè una costruzione \textbf{procedurale} dell'interrogazione: ciascuna interrogazione elenca i passi per eseguire l'operazione.\\
+La presentazione è però più astratta, in quanto utilizza degli operatori algebrici.\\
+Gli operatori dell'algebra relazionale ricevono, come argomenti, relazioni e producono in uscita altre relazioni (dette anche \textbf{relazioni virtuali}).
+
+\section{Operatore selezione}
+Data una relazione $r$ su uno schema $A$, l'operatore di selezione viene indicato con
+    \begin{equation}\begin{aligned}
+        \sigma_{p}(r(A))
+    \end{aligned}\end{equation}
+Dove $p$ è un predicato e $r(A)$ è l'argomento dell'operatore.\\
+La selezione produce una relazione senza nome che ha l'identico schema $A$ della relazione argomento, ma solo le tuple che soddisfano il predicato $p$.
+
+\subsection{Sintassi del predicato di selezione}
+Il predicato $p$ è un'espressione booleana di predicati atomici, che possono essere solo di due tipi: confronto tra due attributi, oppure confronto tra un attributo e una costante.
+
+\subsection{Cardinalità della selezione}
+La cardinalità della relazione virtuale prodotta dall'operazione di selezione $\sigma_p(r(A))$ è 
+    \begin{equation}\begin{aligned}
+        0 \leq |\sigma_{p}(r(A))| \leq |r(A)|
+    \end{aligned}\end{equation}
+
+\subsubsection{Esempi}
+\textbf{ES1:} selezione dei pazienti con residenza a Torino
+    \begin{equation}\begin{aligned}
+        \sigma_{Residenza = 'TO'}(pazienti)
+    \end{aligned}\end{equation}
+    \begin{center}\begin{tabular}{|c|c|c|c|c|} \hline
+        \textbf{COD} & \textbf{Cognome} & \textbf{Nome} 
+        & \textbf{Residenza} & \textbf{AnnoNascita}\\
+        \hline
+        A102 & Necchi & Luca & TO & 1950\\
+        \hline
+        B543 & Missoni & Nadia & TO & 1950\\
+        \hline
+    \end{tabular}\end{center}
+\textbf{ES2:} selezione dei pazienti residenti a Torino o a Vercelli
+    \begin{equation}\begin{aligned}
+        \sigma_{Residenza = 'TO' \wedge Residenza = 'VC'}(pazienti)
+    \end{aligned}\end{equation}
+    \begin{center}\begin{tabular}{|c|c|c|c|c|} \hline
+        \textbf{COD} & \textbf{Cognome} & \textbf{Nome} 
+        & \textbf{Residenza} & \textbf{AnnoNascita}\\ \hline
+        A102 & Necchi & Luca & TO & 1950\\ \hline
+        B543 & Missoni & Nadia & TO & 1950\\ \hline
+        B444 & Missoni & Luigi & VC & 2000\\ \hline
+    \end{tabular}\end{center}
+\textbf{ES3:} selezione dei pazienti non residenti a Torino
+    \begin{equation}\begin{aligned}
+        \sigma_{\neg Residenza = 'TO'}(pazienti)
+    \end{aligned}\end{equation}
+    \begin{center}\begin{tabular}{|c|c|c|c|c|} \hline
+        \textbf{COD} & \textbf{Cognome} & \textbf{Nome} 
+        & \textbf{Residenza} & \textbf{AnnoNascita}\\ \hline
+        B372 & Rossigni & Piero & NO & 1940\\ \hline
+        B444 & Missoni & Luigi & VC & 2000\\ \hline
+        S555 & Rossetti & Gino & AT & 2010\\ \hline
+     \end{tabular}\end{center}
+     
+\section{Operatore proiezione}
+Data una relazione $r(A)$ e un insieme di attributi $A_i, ..., A_k$ tutti appartenenti ad $A$, l'operatore di proiezione
+    \begin{equation}\begin{aligned}
+        \Pi_{A_i, ..., A_k}(r(A))
+    \end{aligned}\end{equation}
+produce come risultato una relazione avente:
+    \begin{itemize}
+        \item{Schema: $\{   A_i, ..., A_k   \}$}
+        \item{Istanza: tutte le tuple della relazione argomento, ma solo rispetto ai campi $A_i, ..., A_k$}
+    \end{itemize}
+
+\subsection{Cardinalità della proiezione}
+A prima vista sembrerebbe che la cardinalità della proiezione sia uguale alla cardinalità della relazione argomento, ovvero
+    \begin{equation}\begin{aligned}
+        |\Pi_{A_i, ..., A_k}(r(A))| = |r(A)|
+    \end{aligned}\end{equation}
+Invece la cardinalità della proiezione è data da:
+    \begin{equation}\begin{aligned}
+        |\Pi_{A_i, ..., A_k}(r(A))| \leq |r(A)|
+    \end{aligned}\end{equation}
+Per capire il perché, vedere l'ES2.\\
+Se, però, gli attributi proiettati $A_i, ..., A_k$ formano una \textbf{superchiave} della relazione argomento, allora:
+    \begin{equation}\begin{aligned}
+        |\Pi_{A_i, ..., A_k}(r(A))| = |r(A)|
+    \end{aligned}\end{equation}
+
+\subsubsection{Esempi}
+\textbf{ES1:} proiezione della relazione $pazienti$ sull'attributo $COD$ e sull'attributo $Cognome$:
+    \begin{equation}\begin{aligned}
+        \Pi_{COD, Cognome}(pazienti)
+    \end{aligned}\end{equation}
+    \begin{center}\begin{tabular}{|c|c|}\hline
+        \textbf{COD} & \textbf{Cognome}\\
+        \hline
+        A102 & Necchi\\ \hline
+        B372 & Rossigni\\ \hline
+        B543 & Missoni\\ \hline
+        B444 & Missoni\\ \hline
+        S555 & Rossetti\\ \hline
+     \end{tabular}\end{center}
+\textbf{ES2:} proiezione della relazione $pazienti$ sull'attributo $Cognome$:
+    \begin{center}\begin{tabular}{|c|}\hline
+        \textbf{Cognome}\\ \hline
+        Necchi\\ \hline
+        Rossigni\\ \hline
+        Missoni\\ \hline
+        Missoni\\ \hline
+        Rossetti\\ \hline
+     \end{tabular}\end{center}
+Questa non è più una relazione valida nel modello relazionale teorico di Codd (non è più un insieme).\\
+Dunque, il risultato è un'istanza di relazione senza ripetizioni:
+    \begin{center}\begin{tabular}{|c|}\hline
+        \textbf{Cognome}\\ \hline
+        Necchi\\ \hline
+        Rossigni\\ \hline
+        Missoni\\ \hline
+        Rossetti\\ \hline
+     \end{tabular}\end{center}
+    
+\section{Composizione di operatori}
+L'algebra relazionale è \textbf{composizionale}, ovvero si possono costruire espressioni di algebra relazionale componendo insieme operatori.\\
+Bisogna fare attenzione a che l'espressione algebrica sia sintatticamente corretta, verificando che gli operatori siano consistenti e coerenti con gli argomenti
+
+\subsubsection{Esempio}
+\textbf{ES1:} Elencare codice e nome dei pazienti residenti a Torino o a Vercelli.
+\begin{enumerate}
+    \item{Selezione dei pazienti residenti a Torino o Vecelli.
+        \begin{equation}\begin{aligned}
+            \sigma_{Residenza = 'To' \wedge Residenza = 'VC'}(pazienti)
+        \end{aligned}\end{equation}}
+    \item{La relazione virtuale prodotta dalla selezione può essere usata come argomento per la proiezione.
+        \begin{equation}\begin{aligned}
+            \Pi_{COD, Nome}(\sigma_{Residenza = 'To' \wedge Residenza = 'VC'}(pazienti))
+        \end{aligned}\end{equation}}
+\end{enumerate}
+Il risultato è una relazione che ha come schema quello della proiezione, e come istanza solo le tuple che soddisfano il predicato della selezione.\\\\
+\textbf{ES2:} La relazione 
+    \begin{equation}\begin{aligned}
+        \sigma_{Residenza = 'To' \wedge Residenza = 'VC'}(\Pi_{COD; Nome}(pazienti))
+    \end{aligned}\end{equation}
+diventa sintatticamente scorretta perché la relazione virtuale prodotta da $\Pi_{COD; Nome}(pazienti)$ non contiene l'attributo $Residenza$.
+
+\section{Operatori insiemistici: unione e differenza}
+Per definizione, gli operatori insiemistici richiedono che gli schemi delle relazioni argomento siano identici.\\\\
+Il risultato dell'operatore insiemistico sulle relazioni argomento $r_1(A)$ e $r_2(A)$ è una relazione che ha come schema lo stesso schema $A$ delle relazioni argomento e come istanza:
+    \begin{itemize}
+        \item{Unione $r_1 \cup r_2$: l'unione delle tuple di $r_1$ e $r_2$}
+        \item{Differenza $r_1 - r_2$:  tutte le tuple di $r_1$ che non sono contenute in $r_2$}
+    \end{itemize}
+
+\subsection{Cardinalità dell'unione}
+La cardinalità dell'unione $r_1(A) \cup r_2(A)$ è data da:
+    \begin{equation}\begin{aligned}
+        0 \leq |r_1(A) \cup r_2(A)| \leq |r_1(A)| + |r_2(A)|
+    \end{aligned}\end{equation}
+La cardinalità può essere minore della somma delle cardinalità delle due relazioni se ci sono delle tuple ripetute.
+
+\subsection{Cardinalità della differenza}
+La cardinalità della differenza $r_1(A) - r_2(A)$ è:
+    \begin{equation}\begin{aligned}
+        0 \leq |r_1(A) - r_2(A)| \leq |r_1(A)|
+    \end{aligned}\end{equation}
+
+\subsubsection{Esempi}
+\textbf{ES1}: elencare cognomi e nomi di tutte le persone coinvolte nel database "Ricoveri Ospedalieri" (quindi, medici e pazienti):
+    \begin{equation}\begin{aligned}
+        \Pi_{Cognome, Nome} (pazienti) \cup
+        \Pi_{Cognome, Nome} (medici)
+    \end{aligned}\end{equation}
+    \begin{center}\begin{tabular}{|c|c|}\hline
+        \textbf{Cognome} & \textbf{Nome}\\ \hline
+        Necchi & Lucca \\ \hline
+        Rossigni & Piero\\ \hline
+        Missoni & Nadia\\ \hline
+        Missoni & Luigi\\ \hline 
+        Rossetti & Gino\\ \hline
+        Neri & Piero\\ \hline
+        Bisi & Mario\\ \hline
+        Bargio & Sergio\\ \hline
+        Belli & Nicola\\ \hline
+        Mizzi & Nicola\\ \hline
+        Monti & Mario\\ \hline
+    \end{tabular}\end{center}
+\textbf{ES2}: elencare le province di residenza dei medici in cui non risiede alcun paziente
+    \begin{equation}\begin{aligned}
+        \Pi_{Residenza} (medici) -
+        \Pi_{Residenza} (pazienti)
+    \end{aligned}\end{equation}
+    \begin{center}\begin{tabular}{|c|}\hline
+        \textbf{Residenza} \\ \hline
+        NO \\ \hline
+    \end{tabular}\end{center}
+    
+\section{Operatore intersezione}
+Esattamente come gli altri due operatori insiemistici, l'operatore intersezione è definito su relazioni aventi lo stesso schema.\\
+Il risultato dell'intersezione $r_1(A) \cap r_2(A)$ è una relazione che ha come schema lo stesso schema $A$ delle relazioni argomento e istanza tutte le tuple di $r_1$ contenute anche in $r_2$.\\\\
+L'operatore di intersezione insiemistica può essere reso con l'operatore di differenza insiemistica:
+    \begin{equation}\begin{aligned}
+        r_1(A) \cap r_2(A) = r_1(A) - (r_1(A) - r_2(A))
+    \end{aligned}\end{equation}
+    
+\subsection{Cardinalità dell'intersezione}
+La cardinalità dell'intersezione soddisfa la seguente relazione:
+    \begin{equation}\begin{aligned}
+        0 \leq |r_1(A) \cap r_2(A)| \leq \min{|r_1(A)|, |r_2(A)|}
+    \end{aligned}\end{equation}
+
+\section{Operatore ridenominazione}
+Data una relazione $r(A)$ con $A = \{   A_1, ..., A_i, ..., A_k, ... A_n   \}$ il risultato della ridenominazione
+    \begin{equation}\begin{aligned}
+        \rho_{B_i, ..., B_k \leftarrow
+        A_i, ..., A_k}(r)
+    \end{aligned}\end{equation}
+è una relazione virtuale, che non modifica la relazione della base dati $r'(A')$ avente:
+    \begin{itemize}
+        \item{Schema:
+            \begin{equation}\begin{aligned}
+                A' = \{ A_1, ..., A_i, ..., A_k, ..., A_n   \}
+            \end{aligned}\end{equation}}
+        \item{Istanza:
+            \begin{equation}\begin{aligned}
+                r' = r (\text{stesse tuple})
+            \end{aligned}\end{equation}}
+    \end{itemize}
+
+\subsubsection{Esempio}
+\textbf{ES1:} Elencare i medici che non sono primari:
+    \begin{equation}\begin{aligned}
+        \Pi_{MATR} (medici) - 
+        \rho_{MATR \leftarrow Primario}(\Pi_{Primario} (reparti))
+    \end{aligned}\end{equation}
+    
+\section{Uso corretto degli operatori insiemistici}
+Nell'utilizzo degli operatori insiemistici abbinati all'operatore di ridenominazione, bisogna assicurarsi sempre che gli attributi delle relazioni siano definiti su domini omogenei (coerenti).\\\\
+\textbf{ES1:} i seguenti sono insiemi con domini omogenei:
+    \begin{equation}\begin{aligned}
+        \Pi_{MATR}(medici) - \rho_{MATR \leftarrow Primario}
+        (\Pi_{Primario}(reparti))
+    \end{aligned}\end{equation}
+\textbf{ES2:} i seguenti sono insiemi con domini non omogenei (anche se gli attributi sono dello stesso tipo):
+    \begin{equation}\begin{aligned}
+        \Pi_{Nome}(medici) - \rho_{Nome \leftarrow Nome-Rep}
+        (\Pi_{Nome-Rep}(pazienti))
+    \end{aligned}\end{equation}
+
+\section{Ridenominazione schema}
+Data una relazione $r$ con schema:
+    \begin{equation}\begin{aligned}
+        R(A) \qquad A = \{  A_1, ..., A_i, ..., A_k, ..., A_n   \}
+    \end{aligned}\end{equation}
+Il risultato della ridenominazione dello schema 
+    \begin{equation}\begin{aligned}
+        \rho_{R'(B_i, ..., B_k) \leftarrow R(A_i, ..., A_k)} (r)
+    \end{aligned}\end{equation}
+è una relazione virtuale (che non modifica la relazione della base dati) con schema:
+    \begin{equation}\begin{aligned}
+        R'(A_1, ..., B_i, ..., B_k, ..., A_n)
+    \end{aligned}\end{equation}
+\textbf{ES:} 
+    \begin{equation}\begin{aligned}
+        \rho_{UTENTI(CF, Provincia) \leftarrow PAZIENTI(COD, Residenza)}(pazienti)\\
+        UTENTI(CF, Cognome, Nome, Provincia, AnnoNascita)
+    \end{aligned}\end{equation}
+
+\section{Prodotto cartesiano}
+Date due relazioni $r_1(A)$ e $r_2(B)$, con $A \cap B = \emptyset$ (i due schemi non hanno attributi in comune), il prodotto cartesiano:
+    \begin{equation}\begin{aligned}
+        r_1(A) \times r_2(B)
+    \end{aligned}\end{equation}
+Produce come risultato una relazione $r'$ avente come risultato:
+    \begin{itemize}
+        \item{Schema: $R'$ composto dall'unione degli schemi $A \cup B$}
+        \item{Istanza: giustapposizione (combinazione) di tutte le tuple di $r_1(A)$ con tutte le tuple di $r_2(B)$}
+    \end{itemize}
+A differenza della sua controparte matematica, nel modello di Codd il prodotto cartesiano gode della proprietà commutativa:
+    \begin{equation}\begin{aligned}
+        r_1(A) \times r_2(B) = r_2(A) \times r_2(B)
+    \end{aligned}\end{equation}
+Infatti, nella relazione di Codd:
+    \begin{itemize}
+        \item{Nello schema di una relazione non è importante l'ordine degli attributi.}
+        \item{Nell'istanza di una relazione non è importante l'ordine delle tuple.}
+    \end{itemize}
+\subsubsection{Esempi}
+\textbf{ES1:}
+    \begin{equation}\begin{aligned}
+        ABC \times DE
+    \end{aligned}\end{equation}
+    \begin{center}\begin{tabular}{|c|c|c|}\hline
+        \textbf{A} & \textbf{B} & \textbf{C} \\ \hline
+        a1 & b1 & c1 \\ \hline
+        a2 & b2 & c2 \\ \hline
+    \end{tabular}\quad
+    \begin{tabular}{|c|c|}\hline
+        \textbf{D} & \textbf{E} \\ \hline
+        d1 & e1 \\ \hline
+        d2 & e2 \\ \hline
+        d3 & e3 \\ \hline
+    \end{tabular}\quad
+    \begin{tabular}{|c|c|c|c|c|}\hline
+        \textbf{A} & \textbf{B} & \textbf{C} & 
+        \textbf{D}  & \textbf{E} \\ \hline
+        a1 & b1 & c1 & d1 & e1\\ \hline
+        a1 & b1 & c1 & d2 & e2\\ \hline
+        a1 & b1 & c1 & d3 & e3\\ \hline
+        a2 & b2 & c2 & d1 & e1\\ \hline
+        a2 & b2 & c2 & d2 & e2\\ \hline
+        a2 & b2 & c2 & d3 & e3\\ \hline
+    \end{tabular}\end{center}
+\textbf{ES2:}
+    \begin{equation}\begin{aligned}
+        DE \times ABC
+    \end{aligned}\end{equation}
+    \begin{center}\begin{tabular}{|c|c|}\hline
+        \textbf{D} & \textbf{E} \\ \hline
+        d1 & e1 \\ \hline
+        d2 & e2 \\ \hline
+        d3 & e3 \\ \hline
+    \end{tabular}\quad
+    \begin{tabular}{|c|c|c|}\hline
+        \textbf{A} & \textbf{B} & \textbf{C} \\ \hline
+        a1 & b1 & c1 \\ \hline
+        a2 & b2 & c2 \\ \hline
+    \end{tabular} \quad
+    \begin{tabular}{|c|c|c|c|c|}\hline
+        \textbf{D} & \textbf{E} &
+        \textbf{A} & \textbf{B} & \textbf{C} \\ \hline
+        d1 & e1 & a1 & b1 & c1  \\ \hline
+        d1 & e1 & a2 & b2 & c2  \\ \hline
+        d2 & e2 & a1 & b1 & c1  \\ \hline
+        d2 & e2 & a2 & b2 & c2  \\ \hline
+        d3 & e3 & a1 & b1 & c1  \\ \hline
+        d3 & e3 & a2 & b2 & c2  \\ \hline
+    \end{tabular}\end{center}
+    
+\subsection{Cardinalità del prodotto cartesiano}
+La cardinalità del prodotto cartesiano $r_1(A) \times r_2(B)$ rispetta la seguente relazione:
+    \begin{equation}\begin{aligned}
+        0 \leq |r_1(A) \times r_2(B)| = |r_1(A)| \cdot |r_2(B)|
+    \end{aligned}\end{equation}
+Infatti: 
+    \begin{itemize}
+        \item{$r_1$ e $r_2$ sono insiemi di tuple, quindi le tuple sono tutte disgiunte}
+        \item{giustapponendo tuple disgiunte con le altre tuple disgiunte ottengo una relazione di tuple disgiunte}
+    \end{itemize}
+
+\section{Operatore $\bowtie_{\theta}$}
+L'operatore di $\bowtie_{\theta}$ serve a costruire informazioni estratte da più relazioni e a mettere in correlazione informazioni di una relazione con informazioni di un'altra relazione.\\\\
+Prendendo in input:
+    \begin{itemize}
+        \item{Due relazioni $r_1(A)$ e $r_2(B)$ con $A \cap B = \emptyset$}
+        \item{Una condizione (predicato) di join $\theta$ da intendersi come una congiunzione di confronti tra attributi del tipo $A_i \phi B_j$, dove $\phi$ è un operatore di confronto}
+    \end{itemize}
+Il $\theta$-join è definito come:
+    \begin{equation}\begin{aligned}
+        r_1(A) \bowtie_{\theta} r_2(B) = 
+        \sigma_{\theta} (r_1(A) \times r_2(B))
+    \end{aligned}\end{equation}
+
+\subsubsection{Esempi}
+\textbf{ES1:} Elencare tutte le informazioni sui pazienti ricoverati.
+    \begin{equation}\begin{aligned}
+        ricoveri \bowtie_{PAZ = COD} pazienti\\
+        \sigma_{PAZ = COD} (ricoverati \times pazienti)
+    \end{aligned}\end{equation}
+Il prodotto cartesiano produce tutte le combinazioni di tutte le tuple di $ricoveri$ con tutte le tuple di $pazienti$.\\
+A questo punto selezioniamo soltanto quelle che soddisfano la condizione di join: $PAZ = COD$.\\\\
+\textbf{ES2:} Elencare le informazioni dei primari di ogni reparto.
+    \begin{equation}\begin{aligned}
+        reparti \bowtie_{Primario = MATR} medici
+    \end{aligned}\end{equation}
+\textbf{ES3:} Elencare i reparti con le informazioni del primario solo nel caso in cui il primario afferisce al reparto che dirige.
+    \begin{equation}\begin{aligned}
+        reparti 
+        \bowtie_{(Primario = MATR) \wedge (COD = Reparto)} 
+        medici
+    \end{aligned}\end{equation}
+\textbf{ES4:} Elenco dei reparti abbinati ai dati dei rispettivi primari solo nel caso in cui il primario non vi afferisca.
+    \begin{equation}\begin{aligned}
+        reparti 
+        \bowtie_{(Primario = MATR) \wedge (COD \neq Reparto)} 
+        medici
+    \end{aligned}\end{equation}
+    
+\subsection{Cardinalità del $\bowtie_{\theta}$}
+La cardinalità di del $\bowtie_{\theta}$ si calcola sfruttando la cardinalità della selezione, e soddisfa la seguente relazione:
+    \begin{equation}\begin{aligned}
+        0 \leq |\sigma_{\theta}(r_1(A) \times r_2(B))| \leq |r_1(A) \times r_2(B)|
+    \end{aligned}\end{equation}
+Sappiamo, però, che $|r_1(A) \times r_2(B)| = |r_1(A)| \cdot |r_2(B)|$, quindi:
+    \begin{equation}\begin{aligned}
+        0 \leq |r_1(A) \times r_2(B)| \leq |r_1(A)| \cdot |r_2(B)|
+    \end{aligned}\end{equation}
+La cardinalità del $\theta$-join ha un range molto ampio.
+
+\subsection{Join con schemi non disgiunti}
+Quando effettuiamo il join tra schemi non disgiunti (che hanno quindi degli attributi in comune), dobbiamo rinominare gli attributi che causano ambiguità almeno in uno dei due schemi.\\\\
+\textbf{ES1:} elencare i pazienti abbinati ai medici che risiedono nella stessa città.
+    \begin{equation}\begin{aligned}
+        \rho_{CognomeM, NomeM, ResidenzaM \leftarrow Cognome, Nome, Residenza}(pazienti)\\ 
+        \bowtie_{ResidenzaP = ResidenzaM}\\
+        \rho_{CognomeP, NomeP, ResidenzaP \leftarrow Cognome, Nome, Residenza}(medici)
+    \end{aligned}\end{equation}
+
+\subsubsection{Esempio}
+Quali medici hanno avuto in cura il paziente Missoni Luigi?\\\\
+    \begin{enumerate}
+        \item{Per sapere dov'è stato ricoverato ho bisogno di combinare i dati della relazione pazienti con la relazione ricoveri
+            \begin{equation}\begin{aligned}
+                \sigma_{Cognome = 'Missoni' \wedge Nome = 'Luigi'} (pazienti) \bowtie_{COD = PAZ} (ricoveri)
+            \end{aligned}\end{equation}}
+        \item{Per conoscere i medici afferenti al reparto ho bisogno della relazione medici, che però, ha molti attributi omonimi ad attributi della relazione virtuale prodotta al punto precedente}
+        \item{Ridenomino gli attributi di medici
+            \begin{equation}\begin{aligned}
+                \rho_{CM, NM, RM, Rep \leftarrow
+                Cognome, Nome, Residenza, Reparto} (medici) 
+            \end{aligned}\end{equation}}
+        \item{Metto in join le due espressioni:
+            \begin{equation}\begin{aligned}
+                [\sigma_{Cognome = 'Missoni' \wedge Nome = 'Luigi'} (pazienti) \bowtie_{COD = PAZ} (ricoveri)]\\
+                \bowtie_{Reparto = Rep}\\
+                \rho_{CM, NM, RM, Rep \leftarrow
+                Cognome, Nome, Residenza, Reparto} (medici) 
+            \end{aligned}\end{equation}}
+        \item{Infine proietto sui dati che mi interessano:
+            \begin{equation}\begin{aligned}
+                \Pi_{COD, AnnoNascita, CM, NM}\\
+                [\sigma_{Cognome = 'Missoni' \wedge Nome = 'Luigi'} (pazienti) \bowtie_{COD = PAZ} (ricoveri)\\
+                \bowtie_{Reparto = Rep}\\
+                \rho_{CM, NM, RM, Rep \leftarrow
+                Cognome, Nome, Residenza, Reparto} (medici)]
+            \end{aligned}\end{equation}}
+    \end{enumerate}
+    
+\subsection{Semplificazione della ridenominazione}
+L'operatore di ridenominazione appesantisce la lettura delle espressioni algebriche.\\
+Quando ho attributi con lo stesso nome su relazioni diverse, posso considerare il nome dell'attributo specificando la tavola a cui appartiente, usando la \textbf{dot-notation}.\\\\
+Facendo riferimento all'esempio precedente, l'interrogazione diventa:
+    \begin{equation}\begin{aligned}
+        \Pi_{COD, AnnoNascita, medici.Cognome, medici.Nome}\\
+        [\sigma_{Cognome = 'Missoni' \wedge Nome = 'Luigi'} (pazienti) \bowtie_{COD = PAZ} (ricoveri)]\\
+        \bowtie_{Reparto = Rep} (medici) 
+    \end{aligned}\end{equation}
+    
+\section{Operatore Natural-Join}
+Date due relazioni $r_1(A)$ e $r_2(B)$, con 
+$A = \{\textbf{X}, Y \}$ e 
+$B = \{\textbf{X}, Z \}$ (X, Y e Z sono insiemi disgiunti di attributi) e $Y \cap Z = \emptyset$.\\\\
+Il natural-join è definito come
+    \begin{equation}\begin{aligned}
+        r_1(A) \bowtie r_2(B) = \\
+        \Pi_{X, Y, Z} (r_1 \bowtie_{\theta} 
+        \rho_{X' \leftarrow X}(r_2))
+    \end{aligned}\end{equation}
+dove $\theta = (X_i = X_i') \wedge ... \wedge (X_k = X_k')$\\\\
+\textbf{Informalmente}: \textit{il natural join tra due relazioni che hanno almeno un attributo in comune ha come condizione (sottintesa) l'uguaglianza tra gli attributi che hanno lo stesso nome.}
+
+\section{Operatore Semi-Join}
+Date due relazioni $r_1(A)$ e $r_2(B)$ definiamo il semi-join come:
+    \begin{equation}\begin{aligned}
+        r_1(A) \ltimes_{\theta} r_2(B) = \\
+        \Pi_{A} (r_1(A) \bowtie{\theta} r_2(B))
+    \end{aligned}\end{equation}
+L'operatore di semi-join funziona da selettore sulla prima tabella sfruttando la seconda.
+
+\subsubsection{Esempi}
+\textbf{ES1:} elencare tutti i dati dei primari.\\
+Per risolvere l'interrogazione selezioniamo solo i medici che sono anche primari:
+    \begin{equation}\begin{aligned}
+        medici \ltimes_{MATR = Primario} reparti
+    \end{aligned}\end{equation}
+\textbf{ES2:} elencare tutti i dati dei pazienti ricoverati in chirurgia:
+    \begin{equation}\begin{aligned}
+        pazienti \ltimes_{COD = PAZ}\\
+        (ricoveri \ltimes_{Reparto = reparti.COD}\\
+        (\sigma_{Nome-Rep = 'Chirurgia'}(reparti)))
+    \end{aligned}\end{equation}
+    
+\subsection{Cardinalità del semi-join}
+La cardinalità del semi-join è uguale alla cardinalità della proiezione sullo schema $A$, quindi al massimo alla cardinalità della relazione costruita su $A$
+    \begin{equation}\begin{aligned}
+        |r_1(A) \ltimes_{\theta} r_2(B)| = 
+        |\Pi_A((r_1(A) \bowtie_{\theta} r_2(B))|\\
+        0 \leq |\Pi_A((r_1(A) \bowtie_{\theta} r_2(B))| \leq |r_1(A)|\\
+        0 \leq |r_1(A) \ltimes_{\theta} r_2(B)| \leq |r_1(A)|
+    \end{aligned}\end{equation}
+    
+\section{Join esterni}
+Chiamiamo $L$ la tabella a sinistra del join e $R$ la tabella a destra.
+
+\subsection{Left Join}
+Il left join viene indicato con $L \leftouterjoin R$, ed consiste nel seguente procedimento:
+    \begin{enumerate}
+        \item{Vengono prese in considerazione tutte le tuple della tavola $L$, nessuna escluse.}
+        \item{Si verifica se le tuple della tabella $L$ sono in join con tuple della tabella $R$.}
+        \item{Qualora una tupla di $L$ non faccia join con nessuna tupla della tavola $R$, si inseriscono valori nulli in corrispondenza degli attributi della seconda tavola.}
+    \end{enumerate}
+
+\subsection{Right Join}
+Il left join viene indicato con $L \rightouterjoin R$, ed consiste nel seguente procedimento:
+    \begin{enumerate}
+        \item{Vengono prese in considerazione tutte le tuple della tavola $R$, nessuna escluse.}
+        \item{Si verifica se le tuple della tabella $R$ sono in join con tuple della tabella $L$.}
+        \item{Qualora una tupla di agenzie non faccia join con nessuna tupla della tavola $L$, si inseriscono valori nulli in corrispondenza degli attributi della prima tavola.}
+    \end{enumerate}
+
+\subsection{Full Join}
+Il full join è l'unione del left join e del right join:
+    \begin{equation}\begin{aligned}
+        L \fullouterjoin R = (L \leftouterjoin R) \cup (L \rightouterjoin R)
+    \end{aligned}\end{equation}
+
+\chapter{Tipologie di interrogazioni}
+\section{Interrogazioni con negazione}
+La negazione all'interno di un'interrogazione può essere di due tipi: essenziale o non essenziale, a seconda della possibilità o meno di riscrivere l'interrogazione senza usare la negazione.\\\\
+\textbf{ES1:} l'interrogazione \textit{"elencare i pazienti non residenti a Torino"} può essere riformulata come \textit{"elencare i pazienti con residenza diversa da Torino"}. Questa è interrogazione con negazione non essenziale.\\\\
+\textbf{ES2:} l'interrogazione \textit{"elencare i medici non primari"} non può essere riformulata senza utilizzare la negazione. Quindi, questa interrogazione contiene una negazione non essenziale.
+
+\subsection{Negazione esssenziale}
+Lo schema generale di risoluzione di un'interrogazione con negazione essenziale consta dei passi seguenti:
+    \begin{enumerate}
+        \item{Definire l'universo del discorso $U$}
+        \item{Rispondere alla domanda in forma positiva $P$}
+        \item{Trovo la risposta $R$ all'interrogazione usando l'operatore differenza: $R = U-P$}
+    \end{enumerate}
+Ovviamente, per poter utilizzare la differenza, gli schemi di $U$ e $P$ devono essere uguali (e, ovviamente, compatibili).
+
+\subsection{Esempi}
+\textbf{ES1:} elencare i medici non primari
+    \begin{equation}\begin{aligned}
+        U = medici \\
+        P = \Pi_{MATR, Cognome, Nome, Residenza, Reparto} (medici \bowtie_{MATR = Primario} reparti)\\
+        R  = medici - \Pi_{MATR, Cognome, Nome, Residenza, Reparto} (medici \bowtie_{MATR = Primario} reparti)
+    \end{aligned}\end{equation}
+\textbf{ES2:}
+    \begin{equation}\begin{aligned}
+        U = \Pi_{COD, Cognome, Nome, Residenza}(pazienti)\\\\
+        P = \Pi_{COD, pazienti.Cognome, pazienti.Nome,      pazienti.Residenza} \\
+        (pazienti \bowtie_{pazienti.Residenza = medici.Residenza} medici)\\\\
+        R = \Pi_{COD, Cognome, Nome, Residenza} (pazienti) -\\
+        \Pi_{COD, pazienti.Cognome, pazienti.Nome,     pazienti.Residenza}\\
+        (pazienti \bowtie_{pazienti.Residenza = medici.Residenza} medici)
+    \end{aligned}\end{equation}
+
+\section{Interrogazioni con quantificazione universale}
+Tutti gli esempi visti finora ricadono nella casistica della quantificazione esistenziale.\\\\
+\textbf{Esiste un medico non primario}\\
+\textbf{Esiste un paziente non residente a Torino}\\
+Quando, invece troviamo le parole \textbf{"tutti", "ogni", "sempre"} nell'interrogazione, ci troviamo davanti a casi di quantificazione universale.\\
+Possiamo risolvere questo tipo di interrogazioni riconducendoci alla quantificazione esistenziale, ricordandoci che la quantificazione universale è la negazione di una quantificazione esistenziale.
+
+\subsection{Operatore deerivato quoziente}
+Dati due insiemi disgiunti di attributi $A$ e $B$, l'operatore derivato quoziente si definisce come:
+    \begin{equation}\begin{aligned}
+        r(A, B) \div s(B) = \Pi_A (r) - \Pi_A ((\Pi_A(r) \times s) - r)
+    \end{aligned}\end{equation}
+\subsubsection{Esempio1}
+
+Consideriamo le seguenti tabelle $E$ = esami, e $P$ = piano di studi.
+    \begin{center}\begin{tabular}{|c|c|}\hline
+        \textbf{MATR} & \textbf{Corso} \\ \hline
+        2 & Programmazione \\ \hline
+        3 & Algebra \\ \hline
+        2 & Basi di dati \\ \hline
+        3 & Programmazione \\ \hline
+        2 & Algebra \\ \hline
+    \end{tabular} \quad \begin{tabular}{|c|}\hline
+        \textbf{Corso}\\ \hline
+        Programmazione\\ \hline
+        Basi di dati\\ \hline
+        Algebra\\ \hline
+    \end{tabular}\end{center}
+Elencare le matricole abbinate a tutti i corsi previsti dal piano di studi.\\\\
+\textbf{1}: Individuo l'universo di riferimento
+    \begin{equation}\begin{aligned}
+        U = \Pi_{MATR} (e)
+    \end{aligned}\end{equation}
+\textbf{2}: Analizzo tutte le combinazioni possibili di matricola con i corsi previsti:
+    \begin{equation}\begin{aligned}
+        \Pi_{MATR}(e) \times p
+    \end{aligned}\end{equation}
+    \begin{center}\begin{tabular}{|c|c|}\hline
+        \textbf{MATR} & \textbf{Corso} \\ \hline
+        2 & Programmazione \\ \hline
+        2 & Basi di dati \\ \hline
+        2 & Algebra \\ \hline
+        3 & Programmazione \\ \hline
+        3 & Basi di dati \\ \hline
+        3 & Algebra \\ \hline
+    \end{tabular}\end{center}
+\textbf{3}: Trovo la differenza con $e$ (hanno lo stesso schema)
+    \begin{equation}\begin{aligned}
+        (\Pi_{MATR}(e) \times p) - e
+    \end{aligned}\end{equation}
+    \begin{center}\begin{tabular}{|c|c|} \hline
+        \textbf{MATR} & \textbf{Corso} \\ \hline
+        3 & Basi di dati \\ \hline
+    \end{tabular}\end{center}
+\textbf{4}: Proiettando questo risultato su $MATR$, otteniamo l'elenco delle matricole che non hanno ancora superato qualche corso.
+    \begin{equation}\begin{aligned}
+        \Pi_{MATR}((\Pi_{MATR}(e) \times p) - e)
+    \end{aligned}\end{equation}
+\textbf{5}: A questo punto possiamo riconsiderare l'universo di partenza, e sottrarre ad esso il risultato ottenuto: 
+    \begin{equation}\begin{aligned}
+        \Pi_{MATR}(e) - \Pi_{MATR}((\Pi_{MATR}(e) \times p) - e)
+    \end{aligned}\end{equation}
+    
+\subsubsection{Esempio 2}
+Elencare i pazienti che hanno subito ricovero in ogni reparto.\\\\
+Espandiamo l'operatore quoziente:
+    \begin{equation}\begin{aligned}
+        \Pi_{PAZ, Reparto}(ricoveri) \div \Pi_{Reparto}(ricoveri) = \\\\
+        \Pi_{PAZ}(\Pi_{PAZ, Reparto}(ricoveri)) -\\
+        \Pi_{PAZ}((\Pi_{PAZ}(\Pi_{PAZ, Reparto}(ricoveri)) 
+        \times \Pi_{Reparto}(ricoveri)) - \\
+        \Pi_{PAZ, Reparto}(ricoveri))
+    \end{aligned}\end{equation}
+
+\section{Semantica di Codd del valore nullo}
+Fin qui abbiamo ipotizzato l'assenza di valori nulli.\\
+In realtà, però, il modello di Codd ne prevede l'esistenza. Il valore nullo è un valore vero e proprio, che appartiene a ogni dominio.\\\\
+Il valore nullo può avere differenti significati:
+    \begin{itemize}
+        \item{Informazione esistente, ma mancante.}
+        \item{Informazione inesistente}
+        \item{Assenza di informazione}
+    \end{itemize}
+La semantica di Codd del valore nullo è il comportamento frontale di una interrogazione a fronte di tuple che contengono valori nulli.\\\\
+In particolare, ci riferiamo alla selezione $\sigma_p$ con predicato $p$, che è una combinazione di confronti.\\
+Il problema che si pone è: che valore di verità assume il confronto quando una tupla ha valore nullo in corrispondenza dell'attributo oggetto del confronto?\\
+Quando il valore della tupla in corrispondenza dell'attributo $A_i$ è nullo, il valore di verità del confronto di un attributo con la costante è \textbf{sconosciuto}.
+
+\section{Logica a tre valori}
+Codd propone di collocarsi in una logica a tre valori: $Falso(F), Vero(V), Sconosciuto(U)$.\\
+Quindi, se $t.A_i$ è nullo, il valore di verità del confronto   
+    \begin{equation}\begin{aligned}
+        t.A_i \theta \text{costante}
+    \end{aligned}\end{equation}
+sarà $U$.
+
+\subsection{Operatori e logica a tre valori}
+Poiché i predicati $\theta$ sono spesso formati da una composizione di AND, OR, NOT, vediamo le \textbf{tavole di verità} dei tre operatori nella logica a tre valori:
+    \begin{center}
+        \begin{tabular}{|c|c|c|c|}\hline
+            \textbf{AND} & \textbf{F} & \textbf{U} & \textbf{T} \\ \hline
+            \textbf{F} & F & F & F \\ \hline
+            \textbf{U} & F & U & U \\ \hline
+            \textbf{T} & F & U & T \\ \hline
+        \end{tabular} \quad
+        \begin{tabular}{|c|c|c|c|}\hline
+            \textbf{OR} & \textbf{F} & \textbf{U} & \textbf{T} \\ \hline
+            \textbf{F} & F & U & T \\ \hline
+            \textbf{U} & U & U & T \\ \hline
+            \textbf{T} & T & T & T \\ \hline
+        \end{tabular} \quad
+        \begin{tabular}{|c|c|}\hline
+            \textbf{NOT} & \\ \hline
+            \textbf{F} & T \\ \hline
+            \textbf{U} & U \\ \hline
+            \textbf{T} & F \\ \hline
+        \end{tabular} 
+    \end{center}
+
+\subsection{Espressioni e logica a tre valori}
+Date le tabelle di verità a tre valori, ogni tupla presa in considerazione genera un valore di verità dell'intera espressione che può essere F, T o U.\\
+Ma quando eseguo una selezione e trovo una tupla che ha valore di verità sconosciuto, seleziono o no la tupla?\\\\
+Considerando una tupla $t$, per sapere se questa è selezionata o meno, usiamo la \textbf{funzione di collasso} del predicato $p(t)$:   
+    \begin{center}\begin{tabular}{|c|c|}\hline
+        \textbf{p(t)} & \textbf{c(p(t))} \\ \hline
+        F & F \\ \hline
+        U & F \\ \hline
+        T & T \\ \hline
+    \end{tabular}\end{center}
+La tupla viene considerata solo se la funzione di collasso è T.\\\\
+Tutte le volte che una tupla presenta valore nullo, in corrispondenza della selezione dà sempre valore di verità sconosciuto.\\
+Per poter cercare una tupla che ha (o non ha) un valore nullo in corrispondenza dell'attributo $A_i$ scrivo un predicato con le clausole:
+    \begin{equation}\begin{aligned}
+        A_i \texttt{ IS NULL} \quad\text{ se mi interessa il valore nullo}\\
+        A_i \texttt{ IS NOT NULL} \quad \text{ se mi interessano i valori non nulli}
+    \end{aligned}\end{equation}
+\textbf{ES1:} 
+    \begin{equation}\begin{aligned}
+        \sigma_{Residenza \texttt{ IS NULL}} (clienti)
+    \end{aligned}\end{equation}
+    \begin{center}\begin{tabular}{|c|c|} \hline
+        \textbf{COD} & \textbf{Residenza} \\ \hline
+        200 & NULL \\ \hline
+        400 & NULL \\ \hline
+    \end{tabular}\end{center}
+\textbf{ES2:}
+    \begin{equation}\begin{aligned}
+        \sigma_{Residenza \texttt{ IS NOT NULL}} (clienti)
+    \end{aligned}\end{equation}
+    \begin{center}\begin{tabular}{|c|c|} \hline
+        \textbf{COD} & \textbf{Residenza} \\ \hline
+        100 & TO \\ \hline
+        300 & TO \\ \hline
+    \end{tabular}\end{center}
+
+\subsection{Limiti della logica a tre valori}
+La logica a tre valori viola il \textbf{principio di non contraddizione} per cui vale:
+    \begin{equation}\begin{aligned}
+        (p \wedge \neg p) = F 
+    \end{aligned}\end{equation}
+Se però, $p = U$, abbiamo 
+    \begin{equation}\begin{aligned}
+        (p \wedge \neg p) = U
+    \end{aligned}\end{equation}
+La logica a tre valori, inoltre, viola il \textbf{principio del terzo escluso}:
+    \begin{equation}\begin{aligned}
+        (p \vee \neg p) = T
+    \end{aligned}\end{equation}
+Se però, $p = U$, abbiamo 
+    \begin{equation}\begin{aligned}
+        (p \vee \neg p) = U
+    \end{aligned}\end{equation}
+
+\subsubsection{Esempio}
+Ipotizziamo che $pazienti$ ammetta valore nullo in corrispondenza dell'attributo $AnnoNascita$, la selezione
+    \begin{equation}\begin{aligned}
+        \sigma_{AnnoNascita < 1980 \vee AnnoNascita \geq 1980} (pazienti)
+    \end{aligned}\end{equation}
+contiene un predicato della forma $(p \vee \neg p)$, ma la funzione collasso dà falso, per cui:
+    \begin{equation}\begin{aligned}
+        |\sigma_{AnnoNascita < 1980 \vee AnnoNascita \geq 1980} (pazienti)| \leq|pazienti|
+    \end{aligned}\end{equation}
+L'interrogazione 
+    \begin{equation}\begin{aligned}
+        \sigma_{AnnoNascita < 1980 \vee AnnoNascita \geq 1980} (pazienti)
+    \end{aligned}\end{equation}
+è equivalente a 
+    \begin{equation}\begin{aligned}
+        \sigma_{AnnoNascita \texttt{ IS NOT NULL}} (pazienti)
+    \end{aligned}\end{equation}
+
+\subsection{Perché la logica a tre valori}
+Immaginiamo un confronto $\neg(A_i = \text{ costante})$:
+    \begin{itemize}
+        \item{Quando arriva una tupla che ha valore nullo in corrispondenza di $A_i$ l'uguaglianza con la costante genera sconosciuto}
+        \item{La funzione \texttt{NOT} applicata ad $A_i$ genera sconosciuto}
+        \item{La funzione collasso non fa selezionare la tupla}
+    \end{itemize}
+Se il confronto tra un valore nullo e una costante avesse assunto il valore F, la negazione avrebbe resituito il valore T!
+
+\section{Proprietà degli operatori algebrici}
+Le proprietà degli operatori ci permettono di semplificare espressioni complesse o per determinare l'equivalenza tra due espressioni.\\
+Inoltre, le proprietà sono effettivamente utilizzate dai DBMS per ottimizzare le interrogazioni.
+
+\subsection{Proprietà commutativa del prodotto cartesiano}
+Ricordando che lo schema risultato del prodotto cartesiano è l'unione dello schema, e che l'ordine degli attributi in una relazione di Codd non è rilevante, possiamo concludere che il prodotto cartesiano è commutativo, cioè:
+    \begin{equation}\begin{aligned}
+        r(A) \times s(B) = s(B) \times r(A)
+    \end{aligned}\end{equation}
+    
+\subsection{Proprietà commutativa del $\theta$-join}
+Ricordando che il prodotto cartesiano è commutativo e che possiamo esprimere il $\theta$-join come una selezione sul prodotto cartesiano, concludiamo che il $\theta$-join è commutativo:
+    \begin{equation}\begin{aligned}
+        r(A) \bowtie_{\theta} s(B) = s(B) \bowtie_{\theta} r(A)
+    \end{aligned}\end{equation}
+
+\subsection{Proprietà associativa del prodotto cartesiano}
+Consideriamo le due espressioni :
+    \begin{equation}\begin{aligned}
+        (r(A) \times s(B)) \times u(C)\\
+        r(A) \times (s(B) \times u(C))
+    \end{aligned}\end{equation}
+Ricordando che:
+    \begin{itemize}
+        \item{Lo schema di $r(A) \times s(B)$ è $A \cup B$}
+        \item{Lo schema di $(r(A) \times s(B)) \times u(C)$ è $(A \cup B) \cup C$}
+        \item{Lo schema di $(A \cup B) \cup C)$ è uguale a $A \cup (B \cup C)$}
+    \end{itemize}
+Possiamo concludere, di conseguenza, che i due schemi coincidono, e che, quindi il prodotto cartesiano è associativo:
+    \begin{equation}\begin{aligned}
+        (r(A) \times s(B)) \times u(C) = r(A) \times (s(B) \times u(C))
+    \end{aligned}\end{equation}
+
+\subsection{Proprietà associativa del $\theta$-join}
+Ricordando che il prodotto cartesiano è associativo e che possiamo esprimere il $\theta$-join come una selezione sul prodotto cartesiano, concludiamo che il $\theta$-join è associativo:
+    \begin{equation}\begin{aligned}
+        (r(A) \bowtie_{\theta_1} s(B))  \bowtie_{\theta_2} u(C) = 
+        r(A) \bowtie_{\theta_1} (s(B)  \bowtie_{\theta_2} u(C))
+    \end{aligned}\end{equation}
+    
+\subsection{Proprietà della selezione multipla}
+    \begin{equation}\begin{aligned}
+        \sigma_{p \wedge q} (r(A))= \sigma_p(\sigma_q(r(A)))
+    \end{aligned}\end{equation}
+La selezione $p \wedge q$ sceglie le tuple che soddisfano sia il predicato $p$ che il predicato $q$.\\
+La selezione di $p$ applicata alle tuple selezionate da $q$, seleziona le tuple che soddisfano contemporanamente $p$ e $q$.
+
+\subsection{Proprietà della sostituzione di operatori}
+    \begin{equation}\begin{aligned}
+        \sigma_{p \wedge q} (r(A))(r(A))= 
+        \sigma_p (r(A)) \cap \sigma_q (r(A))
+    \end{aligned}\end{equation}
+    \begin{equation}\begin{aligned}
+        \sigma_{p \vee q} (r(A))= 
+        \sigma_p (r(A)) \cup \sigma_q (r(A))
+    \end{aligned}\end{equation}
+    \begin{equation}\begin{aligned}
+        \sigma_{p \wedge \neg q} (r(A))= 
+        \sigma_p (r(A)) - \sigma_q (r(A))
+    \end{aligned}\end{equation}
+    
+\subsection{Proprietà distributiva della selezione rispetto alla proiezione}
+    \begin{equation}\begin{aligned}
+        \sigma_p \Pi_X (r(A)) = \Pi_X \sigma_p (r(A))
+    \end{aligned}\end{equation}
+Vale la condizione per cui il predicato $p$ è definito solo su attributi di $X$.\\\\
+Notiamo che, se troviamo $\sigma_p \Pi_X (r(A))$ possiamo sempre riscrivere $\Pi_X \sigma_p (r(A))$, mentre il viceversa non è sempre valido.\\
+Se troviamo $\Pi_X \sigma_p (r(A))$, per poter scrivere $\sigma_p \Pi_X (r(A))$ è necessario che il predicato $p$ sia definito solo su attributi $X$.\\\\
+\textbf{ES1}: l'espressione
+    \begin{equation}\begin{aligned}
+        \Pi_{COD, AnnoNascita} \sigma_{AnnoNascita > 1980} (pazienti)
+    \end{aligned}\end{equation}
+Può essere riscritta come
+    \begin{equation}\begin{aligned}
+        \sigma_{AnnoNascita > 1980} \Pi_{COD, AnnoNascita} (pazienti)
+    \end{aligned}\end{equation}
+\textbf{ES2:} l'espressione
+    \begin{equation}\begin{aligned}
+        \Pi_{COD} \sigma_{AnnoNascita > 1980} (pazienti)
+    \end{aligned}\end{equation}
+Non può essere riscritta come
+    \begin{equation}\begin{aligned}
+        \sigma_{AnnoNascita > 1980} \Pi_{COD} (pazienti)
+    \end{aligned}\end{equation}
+    
+\subsection{Proprietà distributiva della selezione rispetto al prodotto cartesiano}
+    \begin{equation}\begin{aligned}
+        \sigma_p(r(A) \times s(B))
+    \end{aligned}\end{equation}
+Quando $p$ coinvolge sia attributi di $A$ che attributi di $B$ non c'è nessuna possibilità di applicare proprietà distributive.\\\\
+Se invece $p$ coinvolge solo attributi contenuti nello schema di una delle due relazioni (ad esempio $A$) è possibile scrivere:
+    \begin{equation}\begin{aligned}
+        \sigma_p(r(A)) \times s(B)
+    \end{aligned}\end{equation}
+Una volta applicato il prodotto cartesiano, applichiamo la selezione (per ipotesi) solo alle parti $A$ delle giustapposizioni.\\
+Selezionare le tuple giustapposte prendendo solo quelle che soddisfano $p$ è equivalente a selezionare le tuple da $r$ che soddisfano $p$ e giustapporle in seguito alle tuple di $s$.
+
+\subsection{Proprietà distributiva della selezione rispetto al join}
+Ricordando che il prodotto cartesiano che possiamo esprimere il $\theta$-join come una selezione sul prodotto cartesiano, concludiamo che possiamo utilizzare la proprietà distributiva della selezione rispetto al join.
+    \begin{equation}\begin{aligned}
+        \sigma_p(r(A) \bowtie_{\theta} s(B)) = \sigma_p(r(A)) \bowtie_{\theta} s(B)
+    \end{aligned}\end{equation}
+
+\subsection{Proprietà distributiva della selezione rispetto all'unione e differenza}
+    \begin{equation}\begin{aligned}
+        \sigma_p (r(A) \cup s(A)) = \sigma_p (r(A)) \cup \sigma_p (s(A))
+    \end{aligned}\end{equation}
+    \begin{equation}\begin{aligned}
+        \sigma_p (r(A) - s(A)) = \sigma_p (r(A)) - \sigma_p (s(A))
+    \end{aligned}\end{equation}
+    \begin{equation}\begin{aligned}
+        \sigma_p (r(A) \cap s(A)) = \sigma_p (r(A)) \cap \sigma_p (s(A))
+    \end{aligned}\end{equation}
+
+\subsection{Proprietà della proiezione multipla}
+Supponiamo $X, Y$ sottoinsiemi di $A$:
+    \begin{equation}\begin{aligned}
+        \Pi_X \Pi_{X, Y} r(A) = \Pi_X r(A)
+    \end{aligned}\end{equation}
+
+\subsection{Proprietà distributiva della proiezione rispetto al prodotto cartesiano}
+Siano $X_A \subseteq A$ e $X_B \subseteq B$, ovvero:
+    \begin{equation}\begin{aligned}
+        X_A = X \cap A\\
+        X_B = X \cap B
+    \end{aligned}\end{equation}
+Vale la proprietà distributiva della proiezione rispetto al prodotto cartesiano, cioè:
+    \begin{equation}\begin{aligned}
+        \Pi_X (r(A) \times s(B)) = \Pi_{X_A} (r(A)) \times \Pi_{X_B} (r(B))
+    \end{aligned}\end{equation}
+
+\subsection{Proprietà distributiva della proiezione rispetto al join}
+    \begin{equation}\begin{aligned}
+        \Pi_X (r(A) \bowtie_{\theta} s(B)) = \Pi_{X_A} (r(A)) \bowtie_{\theta} \Pi_{X_B} (r(B))
+    \end{aligned}\end{equation}
+Siano $X_A \subseteq A$ e $X_B \subseteq B$, ovvero:
+    \begin{equation}\begin{aligned}
+        X_A = X \cap A\\
+        X_B = X \cap B
+    \end{aligned}\end{equation}
+Inoltre, è necessario che gli attributi coinvolti nel predicato $\theta$ siano tutti contenuti in $X_A \cup X_B$
+
+\subsection{Proprietà distributiva della proiezione rispetto all'unione}
+    \begin{equation}\begin{aligned}
+        \Pi_X (r(A) \cup s(A)) = \Pi_X (r(A)) \cup \Pi_X (s(B))
+    \end{aligned}\end{equation}
+
+\subsection{Altre proprietà}
+Le proprietà distributive della proiezione rispetto alla differenza e all'intersezione non esistono.
